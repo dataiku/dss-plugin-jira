@@ -1,0 +1,35 @@
+{
+    "meta" : {
+        "label": "Jira token authentication",
+        "description": "Connect to Jira using your user name / API token",
+        "icon": "icon-ticket"
+    },
+    "defaultDefinableInline": true,
+    "defaultDefinableAtProjectLevel": true,
+    "pluginParams": [
+    ],
+
+    "params": [
+        {
+            "name": "subdomain",
+            "label": "Subdomain",
+            "type": "STRING",
+            "description": "Usually your company name",
+            "defaultValue" : ""
+        },
+        {
+            "name": "username",
+            "label": "Username",
+            "type": "STRING",
+            "description": "Your email address",
+            "mandatory": true
+        },
+        {
+            "name": "token",
+            "label": "API token",
+            "type": "PASSWORD",
+            "description": "From Jira conf",
+            "mandatory": true
+        }
+    ]
+}

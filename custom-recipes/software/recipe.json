@@ -1,0 +1,101 @@
+{
+    "meta": {
+        "label": "Jira Software recipe",
+        "description": "Retrieve lodsa info from Jira Software",
+        "icon": "icon-ticket"
+    },
+    "kind": "PYTHON",
+    "inputRoles": [
+        {
+            "name": "input_A_role",
+            "label": "Dataset containing IDs",
+            "description": "",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true
+        }
+    ],
+
+    "outputRoles": [
+        {
+            "name": "jira_output",
+            "label": "main output displayed name",
+            "description": "what main output means",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true
+        }
+    ],
+    "params": [
+        {
+            "name": "access_type",
+            "label": "Access type. Reviewer: hidden menu to keep for future extension",
+            "visibilityCondition": "false",
+            "type": "SELECT",
+            "defaultValue": "token_access",
+            "selectChoices": [
+                {
+                    "value": "token_access",
+                    "label": "Token"
+                }
+            ]
+        },
+        {
+            "name": "token_access",
+            "label": "Token API access",
+            "type": "PRESET",
+            "parameterSetId": "basic-auth",
+            "visibilityCondition": "model.access_type == 'token_access'"
+        },
+        {
+            "name": "edge_name",
+            "label": "Item type",
+            "type": "SELECT",
+            "defaultValue": "issue",
+            "selectChoices": [
+                {
+                    "value": "board/epic",
+                    "label": "Board's epic"
+                },
+                {
+                    "value": "board/issue",
+                    "label": "Board's issue"
+                },
+                {
+                    "value": "board/backlog",
+                    "label": "Board's backlog"
+                },
+                {
+                    "value": "board/epic/none/issue",
+                    "label": "Issues without epic"
+                },
+                {
+                    "value": "board/project",
+                    "label": "All project associated with board"
+                },
+                {
+                    "value": "board/project/full",
+                    "label": "All project associated with board"
+                },
+                {
+                    "value": "board/sprint",
+                    "label": "All sprints of the board"
+                },
+                {
+                    "value": "board/version",
+                    "label": "All versions of a board"
+                }
+            ]
+        },
+        {
+            "name": "id_column_name",
+            "label": "Column name",
+            "type": "STRING",
+            "description": "Name of the column containing the IDs to process",
+            "defaultName": "boardId",
+            "mandatory": true,
+            "visibilityCondition": "model.edge_name.startsWith('board')"
+        }
+    ],
+    "resourceKeys": []
+}
