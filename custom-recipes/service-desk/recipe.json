@@ -1,7 +1,7 @@
 {
     "meta": {
         "label": "Jira Service Desk recipe",
-        "description": "Retrieve lodsa info from Jira Service Desk",
+        "description": "Retrieve Jira Service Desk data based on IDs contained in the input dataset",
         "icon": "icon-ticket"
     },
     "kind": "PYTHON",
@@ -89,7 +89,7 @@
         },
         {
             "name": "id_column_name",
-            "label": "Column name",
+            "label": "ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the organization IDs to process",
             "defaultName": "organizationId",
@@ -98,7 +98,7 @@
         },
         {
             "name": "id_column_name",
-            "label": "Column name",
+            "label": "ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the service desk IDs to process",
             "defaultName": "servicedeskId",
@@ -107,7 +107,7 @@
         },
         {
             "name": "id_column_name",
-            "label": "Column name",
+            "label": "ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the issue IDs or keys to process",
             "defaultName": "issueKey",
@@ -116,7 +116,7 @@
         },
         {
             "name": "id_column_name_2",
-            "label": "Queue column name",
+            "label": "Queue ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the queue IDs to process",
             "defaultName": "queueId",

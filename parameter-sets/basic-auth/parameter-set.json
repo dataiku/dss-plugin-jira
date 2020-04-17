@@ -1,6 +1,6 @@
 {
     "meta" : {
-        "label": "Jira token authentication",
+        "label": "Jira API token",
         "description": "Connect to Jira using your user name / API token",
         "icon": "icon-ticket"
     },

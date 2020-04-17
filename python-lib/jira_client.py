@@ -190,12 +190,6 @@ jira_api = {
     }
 }
 
-# rest/agile/1.0/backlog/issue
-# rest/agile/1.0/board
-# rest/agile/1.0/board/filter/{filterId}
-# rest/agile/1.0/board/{boardId}/backlog
-# rest/agile/1.0/board/{boardId}/epic
-
 FILTERING_KEY_WITHOUT_PARAMETER = 0
 FILTERING_KEY_WITH_PARAMETER = 1
 

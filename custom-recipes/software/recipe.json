@@ -1,7 +1,7 @@
 {
     "meta": {
         "label": "Jira Software recipe",
-        "description": "Retrieve lodsa info from Jira Software",
+        "description": "Retrieve Jira Software data based on IDs contained in the input dataset",
         "icon": "icon-ticket"
     },
     "kind": "PYTHON",
@@ -89,7 +89,7 @@
         },
         {
             "name": "id_column_name",
-            "label": "Column name",
+            "label": "ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the IDs to process",
             "defaultName": "boardId",
