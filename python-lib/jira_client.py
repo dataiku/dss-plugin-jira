@@ -5,6 +5,7 @@ import logging
 JIRA_CORE_URL = "https://{site_url}/rest/api/3/{resource_name}"
 JIRA_SERVICE_DESK_URL = "https://{site_url}/rest/servicedeskapi/{resource_name}"
 JIRA_SOFTWARE_URL = "https://{site_url}/rest/agile/1.0/{resource_name}"
+JIRA_OPSGENIE_URL = "https://api.opsgenie.com/{resource_name}"
 JIRA_SERVICE_DESK_ID_404 = "Service Desk ID {item_value} does not exists"
 JIRA_BOARD_ID_404 = "Board {item_value} does not exists or the user does not have permission to view it."
 JIRA_LICENSE_403 = "The user does not a have valid license"
@@ -14,6 +15,11 @@ JIRA_RETURN = "on_return"
 JIRA_RESOURCE = "resource_name"
 JIRA_API = "api"
 JIRA_IS_LAST_PAGE = "isLastPage"
+JIRA_QUERY_STRING = "query_string"
+JIRA_OPSGENIE_PAGING = "paging"
+JIRA_PAGING = "_links"
+JIRA_NEXT = "next"
+JIRA_ERROR_MESSAGES = "errorMessages"
 
 # OAuth
 # https://your-domain.atlassian.net/{api} to https://api.atlassian.com/ex/jira/{cloudid}/{api}.
@@ -186,6 +192,28 @@ jira_api = {
             JIRA_RETURN: {
                 200: "issues"
             }
+        },
+        "alerts": {
+            JIRA_API: JIRA_OPSGENIE_URL,
+            JIRA_RESOURCE: "v2/alerts",
+            JIRA_QUERY_STRING: {
+                "query": "{item_value}"
+            },
+            JIRA_RETURN: {
+                200: "data",
+                402: "The account cannot do this action because of subscription plan"
+            }
+        },
+        "incidents": {
+            JIRA_API: JIRA_OPSGENIE_URL,
+            JIRA_RESOURCE: "v1/incidents",
+            JIRA_QUERY_STRING: {
+                "query": "{item_value}"
+            },
+            JIRA_RETURN: {
+                200: "data",
+                402: "The account cannot do this action because of subscription plan"
+            }
         }
     }
 }
@@ -201,10 +229,12 @@ logging.basicConfig(level=logging.INFO,
 class JiraClient(object):
 
     JIRA_SITE_URL = "{subdomain}.atlassian.net"
+    OPSGENIE_SITE_URL = "{subdomain}.opsgenie.com"
 
-    def __init__(self, connection_details):
+    def __init__(self, connection_details, api_name="jira"):
         logger.info("JiraClient init")
         self.connection_details = connection_details
+        self.api_name = api_name
         self.username = connection_details.get("username", "")
         self.password = connection_details.get("token", "")
         self.subdomain = connection_details.get("subdomain")
@@ -212,7 +242,13 @@ class JiraClient(object):
         self.next_page_url = None
 
     def get_site_url(self):
-        return self.JIRA_SITE_URL.format(subdomain=self.subdomain)
+        if self.is_opsgenie_api():
+            return self.OPSGENIE_SITE_URL.format(subdomain=self.subdomain)
+        else:
+            return self.JIRA_SITE_URL.format(subdomain=self.subdomain)
+
+    def is_opsgenie_api(self):
+        return self.api_name == "opsgenie"
 
     def get_url(self, edge_name, item_value, queueId):
         EDGE_DESCRIPTOR = self.get_edge_descriptor(edge_name)
@@ -237,7 +273,8 @@ class JiraClient(object):
 
     def get_edge(self, edge_name, item_value, data, queue_id=None):
         self.edge_name = edge_name
-        response = self.get(self.get_url(edge_name, item_value, queue_id), data)
+        query_string = self.get_query_string(edge_name, item_value, queue_id)
+        response = self.get(self.get_url(edge_name, item_value, queue_id) + query_string, data)
         if response.status_code >= 400:
             error_template = self.get_error_messages_template(edge_name, response.status_code)
             jira_error_message = self.get_jira_error_message(response)
@@ -252,12 +289,32 @@ class JiraClient(object):
         self.update_next_page(data)
         return self.filter_data(data, edge_name, item_value)
 
-    def get_jira_error_message(self, response):
-        json = response.json()
-        if "errorMessages" in json and len(json['errorMessages']) > 0:
-            return json['errorMessages'][0]
+    def get_query_string(self, edge_name, item_value, queue_id):
+        query_string_dict = self.get_query_string_dict(edge_name)
+        query_string_tokens = []
+        for key in query_string_dict:
+            query_string_template = query_string_dict[key]
+            query_string_value = query_string_template.format(edge_name=edge_name, item_value=item_value, queue_id=queue_id)
+            query_string_tokens.append("{}={}".format(key, query_string_value))
+        if len(query_string_tokens) > 0:
+            return "?" + "&".join(query_string_tokens)
         else:
             return ""
+
+    def get_query_string_dict(self, edge_name):
+        edge_descriptor = self.get_edge_descriptor(edge_name)
+        query_string_template = edge_descriptor.get(JIRA_QUERY_STRING, {})
+        return query_string_template
+
+    def get_jira_error_message(self, response):
+        try:
+            json = response.json()
+            if JIRA_ERROR_MESSAGES in json and len(json[JIRA_ERROR_MESSAGES]) > 0:
+                return json[JIRA_ERROR_MESSAGES][0]
+            else:
+                return ""
+        except Exception:
+            return response.text
 
     def get_edge_descriptor(self, edge_name):
         edge_descriptor = copy.deepcopy(jira_api[JIRA_DEFAULT_DESCRIPTOR])
@@ -302,22 +359,50 @@ class JiraClient(object):
             return [data]
 
     def get(self, url, data=None):
+        args = {}
+        headers = self.get_headers()
+        if headers is not None:
+            args.update({"headers": headers})
+        auth = self.get_auth()
+        if auth is not None:
+            args.update({"auth": auth})
+        if data is not None:
+            args.update({"data": data})
+        response = requests.get(url, **args)
+        return response
+
+    def get_auth(self):
+        if self.is_opsgenie_api():
+            return None
+        else:
+            return (self.username, self.password)
+
+    def get_headers(self):
         headers = {}
         headers["X-ExperimentalApi"] = "opt-in"
-        response = requests.get(url, auth=(self.username, self.password), data=data, headers=headers)
-        return response
+        if self.is_opsgenie_api():
+            headers["Authorization"] = self.get_auth_headers()
+        return headers
+
+    def get_auth_headers(self):
+        return "GenieKey {}".format(self.password)
 
     def update_next_page(self, data):
         if self.is_last_page(data):
             self.next_page_url = None
         else:
-            if "_links" in data and "next" in data["_links"]:
-                self.next_page_url = data["_links"]["next"]
+            if JIRA_PAGING in data and JIRA_NEXT in data[JIRA_PAGING]:
+                self.next_page_url = data[JIRA_PAGING][JIRA_NEXT]
+            elif JIRA_OPSGENIE_PAGING in data and JIRA_NEXT in data[JIRA_OPSGENIE_PAGING]:
+                self.next_page_url = data[JIRA_OPSGENIE_PAGING][JIRA_NEXT]
             else:
                 self.next_page_url = None
 
     def is_last_page(self, data):
-        return (JIRA_IS_LAST_PAGE in data) and (data[JIRA_IS_LAST_PAGE])
+        if self.is_opsgenie_api():
+            return JIRA_OPSGENIE_PAGING not in data or JIRA_NEXT not in data[JIRA_OPSGENIE_PAGING]
+        else:
+            return (JIRA_IS_LAST_PAGE in data) and (data[JIRA_IS_LAST_PAGE])
 
     def get_next_page(self):
         logger.info("Loading next page")
