@@ -15,7 +15,6 @@ class JiraOpsGenieConnector(Connector):
         logging.info("JiraOpsGenieConnector init")
         self.access_type = self.config.get("access_type", "token_access")
         self.connection_details = self.config.get(self.access_type)
-        print("ALX:self.connection_details={}".format(self.connection_details))
         self.edge_name = self.config.get("edge_name", "")
         self.item_value = self.config.get("item_value", "")
         self.data = self.config.get("data", None)
@@ -28,6 +27,7 @@ class JiraOpsGenieConnector(Connector):
     def generate_rows(self, dataset_schema=None, dataset_partitioning=None,
                       partition_id=None, records_limit=-1):
         logger.info("JiraOpsGenieConnector:generate_rows")
+        self.client.start_session(self.edge_name)
         data = self.client.get_edge(self.edge_name, self.item_value, self.data, queue_id=self.queue_id)
         while len(data) > 0:
             counter = 0
@@ -36,7 +36,7 @@ class JiraOpsGenieConnector(Connector):
                     break
                 else:
                     counter = counter + 1
-                yield (result)
+                yield (self.client.format(result))
             if self.client.has_next_page():
                 data = self.client.get_next_page()
             else:

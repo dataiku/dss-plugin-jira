@@ -9,6 +9,7 @@ JIRA_OPSGENIE_URL = "https://api.opsgenie.com/{resource_name}"
 JIRA_SERVICE_DESK_ID_404 = "Service Desk ID {item_value} does not exists"
 JIRA_BOARD_ID_404 = "Board {item_value} does not exists or the user does not have permission to view it."
 JIRA_LICENSE_403 = "The user does not a have valid license"
+JIRA_OPSGENIE_402 = "The account cannot do this action because of subscription plan"
 JIRA_DEFAULT_DESCRIPTOR = "default"
 JIRA_EDGE_NAME = "edge_name"
 JIRA_RETURN = "on_return"
@@ -20,6 +21,9 @@ JIRA_OPSGENIE_PAGING = "paging"
 JIRA_PAGING = "_links"
 JIRA_NEXT = "next"
 JIRA_ERROR_MESSAGES = "errorMessages"
+COLUMN_FORMATING = "column_formating"
+COLUMN_CLEANING = "column_cleaning"
+COLUMN_EXPANDING = "column_expending"
 
 # OAuth
 # https://your-domain.atlassian.net/{api} to https://api.atlassian.com/ex/jira/{cloudid}/{api}.
@@ -113,7 +117,8 @@ jira_api = {
             JIRA_RETURN: {
                 200: "values",
                 404: "Service Desk ID {item_value} or queue ID {queueId} do not exist"
-            }
+            },
+            COLUMN_EXPANDING: ["fields"]
         },
         "board": {
             JIRA_API: JIRA_SOFTWARE_URL,
@@ -201,8 +206,14 @@ jira_api = {
             },
             JIRA_RETURN: {
                 200: "data",
-                402: "The account cannot do this action because of subscription plan"
-            }
+                402: JIRA_OPSGENIE_402
+            },
+            COLUMN_FORMATING: {
+                "integration_type": ["integration", "type"],
+                "integration_id": ["integration", "id"],
+                "integration_name": ["integration", "name"]
+            },
+            COLUMN_CLEANING: ["integration"]
         },
         "incidents": {
             JIRA_API: JIRA_OPSGENIE_URL,
@@ -212,7 +223,67 @@ jira_api = {
             },
             JIRA_RETURN: {
                 200: "data",
-                402: "The account cannot do this action because of subscription plan"
+                402: JIRA_OPSGENIE_402
+            }
+        },
+        "users": {
+            JIRA_API: JIRA_OPSGENIE_URL,
+            JIRA_RESOURCE: "v2/users",
+            JIRA_QUERY_STRING: {
+                "query": "{item_value}"
+            },
+            JIRA_RETURN: {
+                200: "data",
+                402: JIRA_OPSGENIE_402
+            },
+            COLUMN_FORMATING: {
+                "country": ["userAddress", "country"],
+                "state": ["userAddress", "state"],
+                "line": ["userAddress", "line"],
+                "zip_code": ["userAddress", "zipCode"],
+                "city": ["userAddress", "city"],
+                "role": ["role", "id"]
+            },
+            COLUMN_CLEANING: ["userAddress"]
+        },
+        "teams": {
+            JIRA_API: JIRA_OPSGENIE_URL,
+            JIRA_RESOURCE: "v2/teams",
+            JIRA_QUERY_STRING: {
+                "query": "{item_value}"
+            },
+            JIRA_RETURN: {
+                200: "data",
+                402: JIRA_OPSGENIE_402
+            },
+            COLUMN_EXPANDING: ["links"]
+        },
+        "schedules": {
+            JIRA_API: JIRA_OPSGENIE_URL,
+            JIRA_RESOURCE: "v2/schedules",
+            JIRA_QUERY_STRING: {
+                "query": "{item_value}"
+            },
+            JIRA_RETURN: {
+                200: "data",
+                402: JIRA_OPSGENIE_402
+            }
+        },
+        "escalations": {
+            JIRA_API: JIRA_OPSGENIE_URL,
+            JIRA_RESOURCE: "v2/escalations",
+            JIRA_RETURN: {
+                200: "data",
+                402: JIRA_OPSGENIE_402
+            }
+        },
+        "services": {
+            JIRA_API: JIRA_OPSGENIE_URL,
+            JIRA_RESOURCE: "v1/services",
+            JIRA_QUERY_STRING: {"query": "{item_value}"},
+            JIRA_RETURN: {
+                200: "data",
+                402: JIRA_OPSGENIE_402
             }
         }
     }
@@ -240,6 +311,17 @@ class JiraClient(object):
         self.subdomain = connection_details.get("subdomain")
         self.site_url = self.get_site_url()
         self.next_page_url = None
+
+    def start_session(self, edge_name):
+        self.edge_name = edge_name
+        self.edge_descriptor = self.get_edge_descriptor(edge_name)
+        self.formating = self.edge_descriptor.get(COLUMN_FORMATING, [])
+        self.expanding = self.edge_descriptor.get(COLUMN_EXPANDING, [])
+        self.cleaning = self.edge_descriptor.get(COLUMN_CLEANING, [])
+        if self.formating == [] and self.expanding == [] and self.cleaning == []:
+            self.format = self.return_data
+        else:
+            self.format = self.format_data
 
     def get_site_url(self):
         if self.is_opsgenie_api():
@@ -333,6 +415,43 @@ class JiraClient(object):
             return self.arrayed(data)
         else:
             return self.arrayed(data[filtering_key])
+
+    def format_data(self, data):
+        for key in self.formating:
+            path = self.formating[key]
+            data[key] = self.extract(data, path)
+        for key in self.expanding:
+            data = self.expand(data, key)
+        for key in self.cleaning:
+            data.pop(key, None)
+        return data
+
+    def return_data(self, data):
+        return data
+
+    def expand(self, dictionary, key_to_expand):
+        if key_to_expand in dictionary:
+            self.dig(dictionary, dictionary[key_to_expand], [key_to_expand])
+            dictionary.pop(key_to_expand, None)
+        return dictionary
+
+    def dig(self, dictionary, element_to_expand, path_to_element):
+        if not isinstance(element_to_expand, dict):
+            dictionary["_".join(path_to_element)] = element_to_expand
+        else:
+            for key in element_to_expand:
+                new_path = copy.deepcopy(path_to_element)
+                new_path.append(key)
+                self.dig(dictionary, element_to_expand[key], new_path)
+
+    def extract(self, main_dict, path):
+        pointer = main_dict
+        for element in path:
+            if element in pointer:
+                pointer = pointer.get(element)
+            else:
+                return None
+        return pointer
 
     def get_data_filter_key(self, edge_name):
         edge_descriptor = self.get_edge_descriptor(edge_name)

@@ -12,7 +12,6 @@ class JiraSoftwareConnector(Connector):
     def __init__(self, config, plugin_config):
         Connector.__init__(self, config, plugin_config)  # pass the parameters to the base class
 
-        # perform some more initialization
         logging.info("JiraConnector init")
         self.access_type = self.config.get("access_type", "token_access")
         self.connection_details = self.config.get(self.access_type)
@@ -28,6 +27,7 @@ class JiraSoftwareConnector(Connector):
     def generate_rows(self, dataset_schema=None, dataset_partitioning=None,
                       partition_id=None, records_limit=-1):
         logger.info("JiraSoftwareConnector:generate_rows")
+        self.client.start_session(self.edge_name)
         data = self.client.get_edge(self.edge_name, self.item_value, self.data, queue_id=self.queue_id)
         while len(data) > 0:
             counter = 0
@@ -36,7 +36,7 @@ class JiraSoftwareConnector(Connector):
                     break
                 else:
                     counter = counter + 1
-                yield (result)
+                yield (self.client.format(result))
             if self.client.has_next_page():
                 data = self.client.get_next_page()
             else:

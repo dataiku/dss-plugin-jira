@@ -41,6 +41,26 @@
                 {
                     "value": "incidents",
                     "label": "Incidents"
+                },
+                {
+                    "value": "users",
+                    "label": "Users"
+                },
+                {
+                    "value": "teams",
+                    "label": "Teams"
+                },
+                {
+                    "value": "schedules",
+                    "label": "Schedules"
+                },
+                {
+                    "value": "escalations",
+                    "label": "Escalations"
+                },
+                {
+                    "value": "services",
+                    "label": "Services"
                 }
             ]
         },
@@ -116,7 +136,7 @@
             "description": "status:open",
             "type": "STRING",
             "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'alerts' || model.edge_name == 'incidents'"
+            "visibilityCondition": "model.edge_name == 'alerts' || model.edge_name == 'incidents' || model.edge_name == 'users'"
         }
     ]
 }
