@@ -51,7 +51,7 @@
             "name": "edge_name",
             "label": "Item type",
             "type": "SELECT",
-            "defaultValue": "issue",
+            "defaultValue": "organization",
             "selectChoices": [
                 {
                     "value": "organization",
@@ -68,10 +68,6 @@
                 {
                     "value": "request",
                     "label": "Customer requests"
-                },
-                {
-                    "value": "servicedesk",
-                    "label": "Service desks"
                 },
                 {
                     "value": "servicedesk/customer",
@@ -92,7 +88,7 @@
             "label": "ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the organization IDs to process",
-            "defaultName": "organizationId",
+            "defaultValue": "organizationId",
             "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('organization')"
         },
@@ -101,7 +97,7 @@
             "label": "ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the service desk IDs to process",
-            "defaultName": "servicedeskId",
+            "defaultValue": "servicedeskId",
             "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('servicedesk')"
         },
@@ -110,7 +106,7 @@
             "label": "ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the issue IDs or keys to process",
-            "defaultName": "issueKey",
+            "defaultValue": "issueKey",
             "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('request')"
         },
@@ -119,7 +115,7 @@
             "label": "Queue ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the queue IDs to process",
-            "defaultName": "queueId",
+            "defaultValue": "queueId",
             "mandatory": true,
             "visibilityCondition": "model.edge_name == 'servicedesk/queue/issue'"
         }

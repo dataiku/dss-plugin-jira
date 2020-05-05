@@ -51,7 +51,7 @@
             "name": "edge_name",
             "label": "Item type",
             "type": "SELECT",
-            "defaultValue": "issue",
+            "defaultValue": "board/epic",
             "selectChoices": [
                 {
                     "value": "board/epic",
@@ -59,7 +59,7 @@
                 },
                 {
                     "value": "board/issue",
-                    "label": "Board's issue"
+                    "label": "Board's issues"
                 },
                 {
                     "value": "board/backlog",
@@ -92,7 +92,7 @@
             "label": "ID's column name",
             "type": "STRING",
             "description": "Name of the column containing the IDs to process",
-            "defaultName": "boardId",
+            "defaultValue": "boardId",
             "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('board')"
         }

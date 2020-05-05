@@ -44,11 +44,7 @@
                 },
                 {
                     "value": "dashboard",
-                    "label": "Dashboard"
-                },
-                {
-                    "value": "dashboard/search",
-                    "label": "Dashboard search"
+                    "label": "Dashboard list"
                 },
                 {
                     "value": "group",
@@ -59,20 +55,8 @@
                     "label": "Field"
                 },
                 {
-                    "value": "jql/match",
-                    "label": "JQL"
-                },
-                {
                     "value": "search",
                     "label": "Search issues"
-                },
-                {
-                    "value": "worklog/list",
-                    "label": "Work logs"
-                },
-                {
-                    "value": "worklog/deleted",
-                    "label": "Deleted work logs"
                 }
             ]
         },
@@ -93,57 +77,13 @@
         },
         {
             "name": "item_value",
-            "label": "Organization ID",
+            "label": "Group name",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'organization'"
+            "visibilityCondition": "model.edge_name == 'group'"
         },
         {
             "name": "item_value",
-            "label": "Organization ID",
-            "type": "STRING",
-            "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'organization/user'"
-        },
-        {
-            "name": "item_value",
-            "label": "Service Desk ID",
-            "type": "STRING",
-            "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'servicedesk/organization'"
-        },
-        {
-            "name": "item_value",
-            "label": "Issue Key or ID",
-            "type": "STRING",
-            "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'request'"
-        },
-        {
-            "name": "item_value",
-            "label": "Service desk ID",
-            "type": "STRING",
-            "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'servicedesk'"
-        },
-        {
-            "name": "item_value",
-            "label": "Service desk ID",
-            "type": "STRING",
-            "defaultValue": null,
-            "mandatory": true,
-            "visibilityCondition": "model.edge_name == 'servicedesk/customer' || model.edge_name == 'servicedesk/queue' || model.edge_name == 'servicedesk/queue/issue'"
-        },
-        {
-            "name": "queueId",
-            "label": "Queue ID",
-            "type": "STRING",
-            "defaultValue": null,
-            "mandatory": true,
-            "visibilityCondition": "model.edge_name == 'servicedesk/queue/issue'"
-        },
-        {
-            "name": "data",
             "label": "JQL search query",
             "type": "STRING",
             "defaultValue": null,

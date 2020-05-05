@@ -32,7 +32,7 @@
             "name": "edge_name",
             "label": "Item type",
             "type": "SELECT",
-            "defaultValue": "issue",
+            "defaultValue": "board",
             "selectChoices": [
                 {
                     "value": "board",
@@ -44,7 +44,7 @@
                 },
                 {
                     "value": "board/issue",
-                    "label": "Board's issue"
+                    "label": "Board's issues"
                 },
                 {
                     "value": "board/backlog",
@@ -79,7 +79,7 @@
         {
             "name": "item_value",
             "label": "Board ID",
-            "type": "INT",
+            "type": "STRING",
             "defaultValue": "",
             "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('board/')"

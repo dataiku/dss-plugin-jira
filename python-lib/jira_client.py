@@ -51,13 +51,24 @@ jira_api = {
         },
         "dashboard": {JIRA_RETURN: {200: ["dashboards", None]}},
         "dashboard/search": {JIRA_RETURN: {200: "values"}},
-        "group": {JIRA_RETURN: {200: "users"}},
+        "group": {
+            JIRA_RESOURCE: "{edge_name}/member",
+            JIRA_QUERY_STRING: {"groupname": "{item_value}"},
+            JIRA_RETURN: {200: "values"}
+        },
         "field": {
             JIRA_RESOURCE: "{edge_name}",
         },
-        "jql/match": {JIRA_RETURN: {200: "matches"}},
-        "search": {JIRA_RETURN: {200: "issues"}},
-        "worklog/list": {},
+        "search": {
+            JIRA_RESOURCE: "search",
+            JIRA_QUERY_STRING: {"jql": "{item_value}"},
+            JIRA_RETURN: {
+                200: "issues"
+            }
+        },
+        "worklog/list": {
+            JIRA_RESOURCE: "issue/{item_value}/worklog",
+        },
         "worklog/deleted": {},
         "organization": {
             JIRA_API: JIRA_SERVICE_DESK_URL,
