@@ -1,0 +1,112 @@
+{
+    "meta": {
+        "label": "Jira Core recipe",
+        "description": "Retrieve Jira Core data based on IDs contained in the input dataset",
+        "icon": "icon-ticket"
+    },
+    "kind": "PYTHON",
+    "inputRoles": [
+        {
+            "name": "input_A_role",
+            "label": "Dataset containing IDs",
+            "description": "",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true
+        }
+    ],
+
+    "outputRoles": [
+        {
+            "name": "jira_output",
+            "label": "main output displayed name",
+            "description": "what main output means",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true
+        }
+    ],
+    "params": [
+        {
+            "name": "access_type",
+            "label": "Access type. Reviewer: hidden menu to keep for future extension",
+            "visibilityCondition": "false",
+            "type": "SELECT",
+            "defaultValue": "token_access",
+            "selectChoices": [
+                {
+                    "value": "token_access",
+                    "label": "Token"
+                }
+            ]
+        },
+        {
+            "name": "token_access",
+            "label": "Token API access",
+            "type": "PRESET",
+            "parameterSetId": "basic-auth",
+            "visibilityCondition": "model.access_type == 'token_access'"
+        },
+        {
+            "name": "edge_name",
+            "label": "Item type",
+            "type": "SELECT",
+            "defaultValue": "issue",
+            "selectChoices": [
+                {
+                    "value": "issue",
+                    "label": "Issue"
+                },
+                {
+                    "value": "dashboard/search",
+                    "label": "Dashboard search"
+                },
+                {
+                    "value": "group",
+                    "label": "Group"
+                },
+                {
+                    "value": "search",
+                    "label": "Search issues"
+                }
+            ]
+        },
+        {
+            "name": "id_column_name",
+            "label": "ID's column name",
+            "type": "STRING",
+            "description": "Name of the column containing the issues IDs to process",
+            "defaultValue": "issueKey",
+            "mandatory": true,
+            "visibilityCondition": "model.edge_name== 'issue'"
+        },
+        {
+            "name": "id_column_name",
+            "label": "Dashboard ID",
+            "type": "STRING",
+            "description": "Name of the column containing the dashboard IDs to process",
+            "defaultValue": "dashboardId",
+            "mandatory": true,
+            "visibilityCondition": "model.edge_name== 'dashboard/search'"
+        },
+        {
+            "name": "id_column_name",
+            "label": "Groups names' column name",
+            "type": "STRING",
+            "description": "Name of the column containing the groups names to process",
+            "defaultValue": "groupName",
+            "mandatory": true,
+            "visibilityCondition": "model.edge_name== 'group'"
+        },
+        {
+            "name": "id_column_name",
+            "label": "JQL searches' column name",
+            "type": "STRING",
+            "description": "Name of the column containing the JQL search strings",
+            "defaultValue": "JQL",
+            "mandatory": true,
+            "visibilityCondition": "model.edge_name== 'search'"
+        }
+    ],
+    "resourceKeys": []
+}
