@@ -1,6 +1,7 @@
 import requests
 import copy
 import logging
+import json
 
 JIRA_CORE_URL = "https://{site_url}/rest/api/3/{resource_name}"
 JIRA_SERVICE_DESK_URL = "https://{site_url}/rest/servicedeskapi/{resource_name}"
@@ -64,7 +65,8 @@ jira_api = {
             JIRA_QUERY_STRING: {"jql": "{item_value}"},
             JIRA_RETURN: {
                 200: "issues"
-            }
+            },
+            COLUMN_EXPANDING: ["fields"]
         },
         "worklog/list": {
             JIRA_RESOURCE: "issue/{item_value}/worklog",
@@ -169,7 +171,8 @@ jira_api = {
             JIRA_RETURN: {
                 200: "issues",
                 404: JIRA_BOARD_ID_404
-            }
+            },
+            COLUMN_EXPANDING: ["fields"]
         },
         "board/project": {
             JIRA_API: JIRA_SOFTWARE_URL,
@@ -435,9 +438,15 @@ class JiraClient(object):
             data = self.expand(data, key)
         for key in self.cleaning:
             data.pop(key, None)
-        return data
+        return self.escape_json(data)
 
     def return_data(self, data):
+        return self.escape_json(data)
+
+    def escape_json(self, data):
+        for key in data:
+            if isinstance(data[key], dict) or isinstance(data[key], list):
+                data[key] = json.dumps(data[key])
         return data
 
     def expand(self, dictionary, key_to_expand):
