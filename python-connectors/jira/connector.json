@@ -193,13 +193,6 @@
             "label": "Service desk ID",
             "type": "STRING",
             "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'servicedesk'"
-        },
-        {
-            "name": "item_value",
-            "label": "Service desk ID",
-            "type": "STRING",
-            "defaultValue": null,
             "mandatory": true,
             "visibilityCondition": "model.edge_name == 'servicedesk/customer' || model.edge_name == 'servicedesk/queue' || model.edge_name == 'servicedesk/queue/issue'"
         },

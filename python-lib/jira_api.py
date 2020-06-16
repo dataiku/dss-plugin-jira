@@ -100,8 +100,9 @@ edge_descriptors = {
         },
         "servicedesk": {
             API: JIRA_SERVICE_DESK_URL,
+            API_RESOURCE: "{edge_name}",
             API_RETURN: {
-                200: ["values", None],
+                200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
             }
         },
