@@ -19,6 +19,7 @@ class JiraConnector(Connector):
         self.item_value = self.config.get("item_value", "")
         self.data = self.config.get("data", None)
         self.queue_id = self.config.get("queueId", None)
+        self.expand = self.config.get("expand", [])
         self.client = JiraClient(self.connection_details)
 
     def get_read_schema(self):
@@ -28,7 +29,7 @@ class JiraConnector(Connector):
                       partition_id=None, records_limit=-1):
         logger.info("JiraConnector:generate_rows")
         self.client.start_session(self.edge_name)
-        data = self.client.get_edge(self.edge_name, self.item_value, self.data, queue_id=self.queue_id)
+        data = self.client.get_edge(self.edge_name, self.item_value, self.data, queue_id=self.queue_id, expand=self.expand)
         while len(data) > 0:
             counter = 0
             for result in data:

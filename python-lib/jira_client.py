@@ -2,223 +2,227 @@ import requests
 import copy
 import logging
 import json
+import os
 
-JIRA_CORE_URL = "https://{site_url}/rest/api/3/{resource_name}"
-JIRA_SERVICE_DESK_URL = "https://{site_url}/rest/servicedeskapi/{resource_name}"
-JIRA_SOFTWARE_URL = "https://{site_url}/rest/agile/1.0/{resource_name}"
-JIRA_OPSGENIE_URL = "https://api.opsgenie.com/{resource_name}"
+JIRA_CORE_URL = "{site_url}rest/api/3/{resource_name}"
+JIRA_SERVICE_DESK_URL = "{site_url}rest/servicedeskapi/{resource_name}"
+JIRA_SOFTWARE_URL = "{site_url}rest/agile/1.0/{resource_name}"
+JIRA_OPSGENIE_URL = "api.opsgenie.com/{resource_name}"
 JIRA_SERVICE_DESK_ID_404 = "Service Desk ID {item_value} does not exists"
 JIRA_BOARD_ID_404 = "Board {item_value} does not exists or the user does not have permission to view it."
 JIRA_LICENSE_403 = "The user does not a have valid license"
 JIRA_OPSGENIE_402 = "The account cannot do this action because of subscription plan"
-JIRA_DEFAULT_DESCRIPTOR = "default"
-JIRA_EDGE_NAME = "edge_name"
-JIRA_RETURN = "on_return"
-JIRA_RESOURCE = "resource_name"
-JIRA_API = "api"
+API_DEFAULT_DESCRIPTOR = "default"
+API_EDGE_NAME = "edge_name"
+API_RETURN = "on_return"
+API_RESOURCE = "resource_name"
+API = "api"
+API_QUERY_STRING = "query_string"
 JIRA_IS_LAST_PAGE = "isLastPage"
-JIRA_QUERY_STRING = "query_string"
 JIRA_OPSGENIE_PAGING = "paging"
 JIRA_PAGING = "_links"
 JIRA_NEXT = "next"
-JIRA_ERROR_MESSAGES = "errorMessages"
+API_ERROR_MESSAGES = "errorMessages"
 COLUMN_FORMATING = "column_formating"
 COLUMN_CLEANING = "column_cleaning"
 COLUMN_EXPANDING = "column_expending"
+ITEM_VALUE = "{item_value}"
+DEFAULT_COLUMNS_TO_EXPAND = ["changelog", "fields", "renderedFields", "names", "schema", "operations", "editmeta", "versionedRepresentations"]
 
 # OAuth
 # https://your-domain.atlassian.net/{api} to https://api.atlassian.com/ex/jira/{cloudid}/{api}.
 # https://your-domain.atlassian.net/rest/{type}/{version}/{operation} with https://api.atlassian.com/jira/{type}/{version}/cloud/{cloudId}/{operation}
 
 jira_api = {
-    JIRA_DEFAULT_DESCRIPTOR: {
-        JIRA_RESOURCE: "{edge_name}/{item_value}",
-        JIRA_API: JIRA_CORE_URL,
-        JIRA_RETURN: {
+    API_DEFAULT_DESCRIPTOR: {
+        API_RESOURCE: "{edge_name}/{item_value}",
+        API: JIRA_CORE_URL,
+        API_RETURN: {
             200: None,
             401: "The user is not logged in",
             403: "The user does not have permission to complete this request",
             404: "Not found",
             500: "Jira Internal Server Error"
-        }
+        },
+        COLUMN_EXPANDING: DEFAULT_COLUMNS_TO_EXPAND
     },
     "edge_name": {
-        "issue": {},
+        "issue": {
+            API_QUERY_STRING: {"expand": "{expand}"}
+        },
         "issue/createmeta": {
-            JIRA_RESOURCE: "{edge_name}",
-            JIRA_RETURN: {
+            API_RESOURCE: "{edge_name}",
+            API_RETURN: {
                 200: "projects"
             }
         },
-        "dashboard": {JIRA_RETURN: {200: ["dashboards", None]}},
-        "dashboard/search": {JIRA_RETURN: {200: "values"}},
+        "dashboard": {API_RETURN: {200: ["dashboards", None]}},
+        "dashboard/search": {API_RETURN: {200: "values"}},
         "group": {
-            JIRA_RESOURCE: "{edge_name}/member",
-            JIRA_QUERY_STRING: {"groupname": "{item_value}"},
-            JIRA_RETURN: {200: "values"}
+            API_RESOURCE: "{edge_name}/member",
+            API_QUERY_STRING: {"groupname": ITEM_VALUE},
+            API_RETURN: {200: "values"}
         },
         "field": {
-            JIRA_RESOURCE: "{edge_name}",
+            API_RESOURCE: "{edge_name}",
         },
         "search": {
-            JIRA_RESOURCE: "search",
-            JIRA_QUERY_STRING: {"jql": "{item_value}"},
-            JIRA_RETURN: {
+            API_RESOURCE: "search",
+            API_QUERY_STRING: {"jql": ITEM_VALUE, "expand": "{expand}"},
+            API_RETURN: {
                 200: "issues"
-            },
-            COLUMN_EXPANDING: ["fields"]
+            }
         },
         "worklog/list": {
-            JIRA_RESOURCE: "issue/{item_value}/worklog",
+            API_RESOURCE: "issue/{item_value}/worklog",
         },
         "worklog/deleted": {},
         "organization": {
-            JIRA_API: JIRA_SERVICE_DESK_URL,
-            JIRA_RETURN: {
-                200: ["values", None],
+            API: JIRA_SERVICE_DESK_URL,
+            API_RESOURCE: "organization",
+            API_RETURN: {
+                200: "values",
                 404: "Organization ID {item_value} does not exists"
             }
         },
         "organization/user": {
-            JIRA_API: JIRA_SERVICE_DESK_URL,
-            JIRA_RESOURCE: "organization/{item_value}/user",
-            JIRA_RETURN: {
-                200: ["values", None],
+            API: JIRA_SERVICE_DESK_URL,
+            API_RESOURCE: "organization/{item_value}/user",
+            API_RETURN: {
+                200: "values",
                 404: "Organization ID {item_value} does not exists"
             }
         },
         "servicedesk/organization": {
-            JIRA_API: JIRA_SERVICE_DESK_URL,
-            JIRA_RESOURCE: "servicedesk/{item_value}/organization",
-            JIRA_RETURN: {
+            API: JIRA_SERVICE_DESK_URL,
+            API_RESOURCE: "servicedesk/{item_value}/organization",
+            API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
             }
         },
         "request": {
-            JIRA_API: JIRA_SERVICE_DESK_URL,
-            JIRA_RETURN: {
+            API: JIRA_SERVICE_DESK_URL,
+            API_RETURN: {
                 200: ["values", None]
             }
         },
         "servicedesk": {
-            JIRA_API: JIRA_SERVICE_DESK_URL,
-            JIRA_RETURN: {
+            API: JIRA_SERVICE_DESK_URL,
+            API_RETURN: {
                 200: ["values", None],
                 404: JIRA_SERVICE_DESK_ID_404
             }
         },
         "servicedesk/customer": {
-            JIRA_API: JIRA_SERVICE_DESK_URL,
-            JIRA_RESOURCE: "servicedesk/{item_value}/customer",
-            JIRA_RETURN: {
+            API: JIRA_SERVICE_DESK_URL,
+            API_RESOURCE: "servicedesk/{item_value}/customer",
+            API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
             }
         },
         "servicedesk/queue": {
-            JIRA_API: JIRA_SERVICE_DESK_URL,
-            JIRA_RESOURCE: "servicedesk/{item_value}/queue",
-            JIRA_RETURN: {
+            API: JIRA_SERVICE_DESK_URL,
+            API_RESOURCE: "servicedesk/{item_value}/queue",
+            API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
             }
         },
         "servicedesk/queue/issue": {
-            JIRA_API: JIRA_SERVICE_DESK_URL,
-            JIRA_RESOURCE: "servicedesk/{item_value}/queue/{queueId}/issue",
-            JIRA_RETURN: {
+            API: JIRA_SERVICE_DESK_URL,
+            API_RESOURCE: "servicedesk/{item_value}/queue/{queueId}/issue",
+            API_RETURN: {
                 200: "values",
                 404: "Service Desk ID {item_value} or queue ID {queueId} do not exist"
-            },
-            COLUMN_EXPANDING: ["fields"]
+            }
         },
         "board": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board",
+            API_RETURN: {
                 200: "values",
                 404: JIRA_BOARD_ID_404
             }
         },
         "board/epic": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board/{item_value}/epic",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/epic",
+            API_RETURN: {
                 200: "values",
                 404: JIRA_BOARD_ID_404
             }
         },
         "board/issue": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board/{item_value}/issue",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/issue",
+            API_RETURN: {
                 200: "issues",
                 404: JIRA_BOARD_ID_404
             }
         },
         "board/backlog": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board/{item_value}/backlog",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/backlog",
+            API_RETURN: {
                 200: "issues",
                 404: JIRA_BOARD_ID_404
             }
         },
         "board/epic/none/issue": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board/{item_value}/epic/none/issue",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/epic/none/issue",
+            API_RETURN: {
                 200: "issues",
                 404: JIRA_BOARD_ID_404
-            },
-            COLUMN_EXPANDING: ["fields"]
+            }
         },
         "board/project": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board/{item_value}/project",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/project",
+            API_RETURN: {
                 200: "values"
             }
         },
         "board/project/full": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board/{item_value}/project/full",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/project/full",
+            API_RETURN: {
                 200: "values",
                 403: JIRA_LICENSE_403
             }
         },
         "board/sprint": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board/{item_value}/sprint",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/sprint",
+            API_RETURN: {
                 200: "values",
                 403: JIRA_LICENSE_403
             }
         },
         "board/version": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "board/{item_value}/version",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/version",
+            API_RETURN: {
                 200: "values",
                 403: JIRA_LICENSE_403
             }
         },
         "epic/none/issue": {
-            JIRA_API: JIRA_SOFTWARE_URL,
-            JIRA_RESOURCE: "epic/none/issue",
-            JIRA_RETURN: {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "epic/none/issue",
+            API_RETURN: {
                 200: "issues"
             }
         },
         "alerts": {
-            JIRA_API: JIRA_OPSGENIE_URL,
-            JIRA_RESOURCE: "v2/alerts",
-            JIRA_QUERY_STRING: {
-                "query": "{item_value}"
+            API: JIRA_OPSGENIE_URL,
+            API_RESOURCE: "v2/alerts",
+            API_QUERY_STRING: {
+                "query": ITEM_VALUE
             },
-            JIRA_RETURN: {
+            API_RETURN: {
                 200: "data",
                 402: JIRA_OPSGENIE_402
             },
@@ -230,23 +234,23 @@ jira_api = {
             COLUMN_CLEANING: ["integration"]
         },
         "incidents": {
-            JIRA_API: JIRA_OPSGENIE_URL,
-            JIRA_RESOURCE: "v1/incidents",
-            JIRA_QUERY_STRING: {
-                "query": "{item_value}"
+            API: JIRA_OPSGENIE_URL,
+            API_RESOURCE: "v1/incidents",
+            API_QUERY_STRING: {
+                "query": ITEM_VALUE
             },
-            JIRA_RETURN: {
+            API_RETURN: {
                 200: "data",
                 402: JIRA_OPSGENIE_402
             }
         },
         "users": {
-            JIRA_API: JIRA_OPSGENIE_URL,
-            JIRA_RESOURCE: "v2/users",
-            JIRA_QUERY_STRING: {
-                "query": "{item_value}"
+            API: JIRA_OPSGENIE_URL,
+            API_RESOURCE: "v2/users",
+            API_QUERY_STRING: {
+                "query": ITEM_VALUE
             },
-            JIRA_RETURN: {
+            API_RETURN: {
                 200: "data",
                 402: JIRA_OPSGENIE_402
             },
@@ -261,41 +265,41 @@ jira_api = {
             COLUMN_CLEANING: ["userAddress"]
         },
         "teams": {
-            JIRA_API: JIRA_OPSGENIE_URL,
-            JIRA_RESOURCE: "v2/teams",
-            JIRA_QUERY_STRING: {
-                "query": "{item_value}"
+            API: JIRA_OPSGENIE_URL,
+            API_RESOURCE: "v2/teams",
+            API_QUERY_STRING: {
+                "query": ITEM_VALUE
             },
-            JIRA_RETURN: {
+            API_RETURN: {
                 200: "data",
                 402: JIRA_OPSGENIE_402
             },
-            COLUMN_EXPANDING: ["links"]
+            COLUMN_EXPANDING: DEFAULT_COLUMNS_TO_EXPAND.append("links")
         },
         "schedules": {
-            JIRA_API: JIRA_OPSGENIE_URL,
-            JIRA_RESOURCE: "v2/schedules",
-            JIRA_QUERY_STRING: {
-                "query": "{item_value}"
+            API: JIRA_OPSGENIE_URL,
+            API_RESOURCE: "v2/schedules",
+            API_QUERY_STRING: {
+                "query": ITEM_VALUE
             },
-            JIRA_RETURN: {
+            API_RETURN: {
                 200: "data",
                 402: JIRA_OPSGENIE_402
             }
         },
         "escalations": {
-            JIRA_API: JIRA_OPSGENIE_URL,
-            JIRA_RESOURCE: "v2/escalations",
-            JIRA_RETURN: {
+            API: JIRA_OPSGENIE_URL,
+            API_RESOURCE: "v2/escalations",
+            API_RETURN: {
                 200: "data",
                 402: JIRA_OPSGENIE_402
             }
         },
         "services": {
-            JIRA_API: JIRA_OPSGENIE_URL,
-            JIRA_RESOURCE: "v1/services",
-            JIRA_QUERY_STRING: {"query": "{item_value}"},
-            JIRA_RETURN: {
+            API: JIRA_OPSGENIE_URL,
+            API_RESOURCE: "v1/services",
+            API_QUERY_STRING: {"query": ITEM_VALUE},
+            API_RETURN: {
                 200: "data",
                 402: JIRA_OPSGENIE_402
             }
@@ -313,18 +317,25 @@ logging.basicConfig(level=logging.INFO,
 
 class JiraClient(object):
 
-    JIRA_SITE_URL = "{subdomain}.atlassian.net"
-    OPSGENIE_SITE_URL = "{subdomain}.opsgenie.com"
+    JIRA_SITE_URL = "https://{subdomain}.atlassian.net/"
+    OPSGENIE_SITE_URL = "https://{subdomain}.opsgenie.com/"
 
     def __init__(self, connection_details, api_name="jira"):
         logger.info("JiraClient init")
         self.connection_details = connection_details
         self.api_name = api_name
+        self.api_url = self.normalize_url(connection_details.get("api_url", ""))
+        self.server_type = connection_details.get("server_type", "cloud")
         self.username = connection_details.get("username", "")
         self.password = connection_details.get("token", "")
         self.subdomain = connection_details.get("subdomain")
+        self.ignore_ssl_check = connection_details.get("ignore_ssl_check", False)
         self.site_url = self.get_site_url()
         self.next_page_url = None
+
+    def normalize_url(self, url):
+        url = os.path.join(url, '')
+        return url
 
     def start_session(self, edge_name):
         self.edge_name = edge_name
@@ -341,14 +352,17 @@ class JiraClient(object):
         if self.is_opsgenie_api():
             return self.OPSGENIE_SITE_URL.format(subdomain=self.subdomain)
         else:
-            return self.JIRA_SITE_URL.format(subdomain=self.subdomain)
+            if self.server_type == "cloud":
+                return self.JIRA_SITE_URL.format(subdomain=self.subdomain)
+            else:
+                return self.api_url
 
     def is_opsgenie_api(self):
         return self.api_name == "opsgenie"
 
     def get_url(self, edge_name, item_value, queueId):
         EDGE_DESCRIPTOR = self.get_edge_descriptor(edge_name)
-        API_URL = EDGE_DESCRIPTOR[JIRA_API]
+        API_URL = EDGE_DESCRIPTOR[API]
         return API_URL.format(site_url=self.site_url, resource_name=self.get_resource_name(edge_name, item_value, queueId))
 
     def get_resource_name(self, edge_name, item_value, queueId):
@@ -365,11 +379,11 @@ class JiraClient(object):
 
     def get_ressource_structure(self, edge_name):
         edge_descriptor = self.get_edge_descriptor(edge_name)
-        return edge_descriptor[JIRA_RESOURCE]
+        return edge_descriptor[API_RESOURCE]
 
-    def get_edge(self, edge_name, item_value, data, queue_id=None):
+    def get_edge(self, edge_name, item_value, data, queue_id=None, expand=[]):
         self.edge_name = edge_name
-        query_string = self.get_query_string(edge_name, item_value, queue_id)
+        query_string = self.get_query_string(edge_name, item_value, queue_id, expand)
         response = self.get(self.get_url(edge_name, item_value, queue_id) + query_string, data)
         if response.status_code >= 400:
             error_template = self.get_error_messages_template(edge_name, response.status_code)
@@ -385,13 +399,14 @@ class JiraClient(object):
         self.update_next_page(data)
         return self.filter_data(data, edge_name, item_value)
 
-    def get_query_string(self, edge_name, item_value, queue_id):
+    def get_query_string(self, edge_name, item_value, queue_id, expand=[]):
         query_string_dict = self.get_query_string_dict(edge_name)
         query_string_tokens = []
         for key in query_string_dict:
             query_string_template = query_string_dict[key]
-            query_string_value = query_string_template.format(edge_name=edge_name, item_value=item_value, queue_id=queue_id)
-            query_string_tokens.append("{}={}".format(key, query_string_value))
+            query_string_value = query_string_template.format(edge_name=edge_name, item_value=item_value, queue_id=queue_id, expand=",".join(expand))
+            if query_string_value is not None and query_string_value != "" and query_string_value != "[]":
+                query_string_tokens.append("{}={}".format(key, query_string_value))
         if len(query_string_tokens) > 0:
             return "?" + "&".join(query_string_tokens)
         else:
@@ -399,23 +414,23 @@ class JiraClient(object):
 
     def get_query_string_dict(self, edge_name):
         edge_descriptor = self.get_edge_descriptor(edge_name)
-        query_string_template = edge_descriptor.get(JIRA_QUERY_STRING, {})
+        query_string_template = edge_descriptor.get(API_QUERY_STRING, {})
         return query_string_template
 
     def get_jira_error_message(self, response):
         try:
             json = response.json()
-            if JIRA_ERROR_MESSAGES in json and len(json[JIRA_ERROR_MESSAGES]) > 0:
-                return json[JIRA_ERROR_MESSAGES][0]
+            if API_ERROR_MESSAGES in json and len(json[API_ERROR_MESSAGES]) > 0:
+                return json[API_ERROR_MESSAGES][0]
             else:
                 return ""
         except Exception:
             return response.text
 
     def get_edge_descriptor(self, edge_name):
-        edge_descriptor = copy.deepcopy(jira_api[JIRA_DEFAULT_DESCRIPTOR])
-        if edge_name in jira_api[JIRA_EDGE_NAME]:
-            update_dict(edge_descriptor, jira_api[JIRA_EDGE_NAME][edge_name])
+        edge_descriptor = copy.deepcopy(jira_api[API_DEFAULT_DESCRIPTOR])
+        if edge_name in jira_api[API_EDGE_NAME]:
+            update_dict(edge_descriptor, jira_api[API_EDGE_NAME][edge_name])
         return edge_descriptor
 
     def filter_data(self, data, edge_name, item_value):
@@ -475,17 +490,17 @@ class JiraClient(object):
 
     def get_data_filter_key(self, edge_name):
         edge_descriptor = self.get_edge_descriptor(edge_name)
-        if (JIRA_RETURN in edge_descriptor) and (200 in edge_descriptor[JIRA_RETURN]):
-            key = edge_descriptor[JIRA_RETURN][200]
+        if (API_RETURN in edge_descriptor) and (200 in edge_descriptor[API_RETURN]):
+            key = edge_descriptor[API_RETURN][200]
         else:
             key = None
         return key
 
     def get_error_messages_template(self, edge_name, status_code):
         edge_descriptor = self.get_edge_descriptor(edge_name)
-        error_messages_template = jira_api[JIRA_DEFAULT_DESCRIPTOR][JIRA_RETURN]
-        if JIRA_RETURN in edge_descriptor:
-            update_dict(error_messages_template, edge_descriptor[JIRA_RETURN])
+        error_messages_template = jira_api[API_DEFAULT_DESCRIPTOR][API_RETURN]
+        if API_RETURN in edge_descriptor:
+            update_dict(error_messages_template, edge_descriptor[API_RETURN])
         if status_code in error_messages_template:
             return error_messages_template[status_code]
         else:
@@ -507,6 +522,8 @@ class JiraClient(object):
             args.update({"auth": auth})
         if data is not None:
             args.update({"data": data})
+        if self.ignore_ssl_check:
+            args.update({"verify": False})
         response = requests.get(url, **args)
         return response
 
