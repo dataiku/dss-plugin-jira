@@ -204,7 +204,7 @@
             "visibilityCondition": "model.edge_name == 'servicedesk/customer' || model.edge_name == 'servicedesk/queue' || model.edge_name == 'servicedesk/queue/issue'"
         },
         {
-            "name": "queueId",
+            "name": "queue_id",
             "label": "Queue ID",
             "type": "STRING",
             "defaultValue": null,

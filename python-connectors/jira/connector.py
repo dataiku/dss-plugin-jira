@@ -18,7 +18,7 @@ class JiraConnector(Connector):
         self.edge_name = self.config.get("edge_name", "")
         self.item_value = self.config.get("item_value", "")
         self.data = self.config.get("data", None)
-        self.queue_id = self.config.get("queueId", None)
+        self.queue_id = self.config.get("queue_id", None)
         self.expand = self.config.get("expand", [])
         self.client = JiraClient(self.connection_details)
 
