@@ -113,7 +113,6 @@
             "label": "Issue ID or key",
             "type": "STRING",
             "defaultValue": "",
-            "mandatory": true,
             "visibilityCondition": "model.edge_name == 'issue'"
         },
         {
@@ -170,7 +169,6 @@
             "label": "Organization ID",
             "type": "STRING",
             "defaultValue": "",
-            "mandatory": true,
             "visibilityCondition": "model.edge_name == 'organization/user'"
         },
         {
@@ -178,7 +176,6 @@
             "label": "Service Desk ID",
             "type": "STRING",
             "defaultValue": "",
-            "mandatory": true,
             "visibilityCondition": "model.edge_name == 'servicedesk/organization'"
         },
         {
@@ -193,7 +190,6 @@
             "label": "Service desk ID",
             "type": "STRING",
             "defaultValue": null,
-            "mandatory": true,
             "visibilityCondition": "model.edge_name == 'servicedesk/customer' || model.edge_name == 'servicedesk/queue' || model.edge_name == 'servicedesk/queue/issue'"
         },
         {
@@ -201,7 +197,6 @@
             "label": "Queue ID",
             "type": "STRING",
             "defaultValue": null,
-            "mandatory": true,
             "visibilityCondition": "model.edge_name == 'servicedesk/queue/issue'"
         },
         {
@@ -209,7 +204,6 @@
             "label": "Board ID",
             "type": "STRING",
             "defaultValue": "",
-            "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('board/')"
         }
     ]
