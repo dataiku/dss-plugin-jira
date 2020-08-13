@@ -80,7 +80,7 @@ class JiraClient(object):
         edge_descriptor = self.get_edge_descriptor(edge_name)
         return edge_descriptor[self.api.API_RESOURCE]
 
-    def get_edge(self, edge_name, item_value, data, queue_id=None, expand=[]):
+    def get_edge(self, edge_name, item_value, data, queue_id=None, expand=[], raise_exception=True):
         self.edge_name = edge_name
         query_string = self.get_query_string(edge_name, item_value, queue_id, expand)
         response = self.get(self.get_url(edge_name, item_value, queue_id) + query_string, data)
@@ -92,7 +92,10 @@ class JiraClient(object):
                                                   queue_id=queue_id,
                                                   status_code=response.status_code,
                                                   jira_error_message=jira_error_message)
-            raise Exception("{}".format(error_message))
+            if raise_exception:
+                raise Exception("{}".format(error_message))
+            else:
+                return [{"error": error_message}]
 
         data = response.json()
         self.update_next_page(data)
@@ -223,6 +226,7 @@ class JiraClient(object):
             args.update({"data": data})
         if self.ignore_ssl_check:
             args.update({"verify": False})
+        logger.info("Access Jira on endppoint {}".format(url))
         response = requests.get(url, **args)
         return response
 

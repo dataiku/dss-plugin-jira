@@ -42,7 +42,7 @@
         },
         {
             "name": "token_access",
-            "label": "Token API access",
+            "label": "Jira connection",
             "type": "PRESET",
             "parameterSetId": "basic-auth",
             "visibilityCondition": "model.access_type == 'token_access'"
@@ -72,6 +72,14 @@
                 {
                     "value": "search",
                     "label": "Core: Search issues"
+                },
+                {
+                    "value": "project/versions",
+                    "label": "Core: Search project's versions"
+                },
+                {
+                    "value": "project/components",
+                    "label": "Core: Search project's components"
                 },
                 {
                     "value": "board/epic",
@@ -206,7 +214,7 @@
             "description": "Name of the column containing the IDs to process",
             "defaultValue": "boardId",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name.startsWith('board')"
+            "visibilityCondition": "['board', 'project/versions', 'project/components'].indexOf(model.edge_name) >= 0"
         },
         {
             "name": "expand",
@@ -234,6 +242,30 @@
                 {"value": "operations", "label": "Operations"},
                 {"value": "editmeta", "label": "Edit meta"},
                 {"value": "versionedRepresentations", "label": "Versioned representations"}
+            ]
+        },
+        {
+            "name": "expand",
+            "label": "Expand",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['project/search'].indexOf(model.edge_name) >= 0",
+            "selectChoices": [
+                {"value": "description", "label": "Change logs"},
+                {"value": "projectKeys", "label": "Project Keys"},
+                {"value": "lead", "label": "Lead"},
+                {"value": "issueTypes", "label": "Issue types"},
+                {"value": "url", "label": "URL"},
+                {"value": "insight", "label": "Insight"}
+            ]
+        },
+        {
+            "name": "expand",
+            "label": "Expand",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['project/versions'].indexOf(model.edge_name) >= 0",
+            "selectChoices": [
+                {"value": "issuesstatus", "label": "Issue status"},
+                {"value": "operations", "label": "Operations"}
             ]
         }
     ],

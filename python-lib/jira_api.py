@@ -32,7 +32,7 @@ edge_descriptors = {
             200: None,
             401: "The user is not logged in",
             403: "The user does not have permission to complete this request",
-            404: "Not found",
+            404: "Item {item_value} not found",
             500: "Jira Internal Server Error"
         },
         COLUMN_EXPANDING: DEFAULT_COLUMNS_TO_EXPAND
@@ -41,11 +41,41 @@ edge_descriptors = {
         "issue": {
             API_QUERY_STRING: {"expand": "{expand}"}
         },
+        "issue(JQL)": {
+            API_RESOURCE: "search",
+            API_QUERY_STRING: {"jql": ITEM_VALUE, "expand": "{expand}"},
+            API_RETURN: {
+                200: "issues"
+            }
+        },
+        "issue(Filter)": {
+            API_RESOURCE: "search",
+            API_QUERY_STRING: {"jql": "filter={}".format(ITEM_VALUE), "expand": "{expand}"},
+            API_RETURN: {
+                200: "issues"
+            }
+        },
         "issue/createmeta": {
             API_RESOURCE: "{edge_name}",
             API_RETURN: {
                 200: "projects"
             }
+        },
+        "project/search": {
+            API_RESOURCE: "{edge_name}",
+            API_QUERY_STRING: {"expand": "{expand}"},
+            # expand: description, projectKeyrs, lead, issueTypes, url, insight
+            API_RETURN: {
+                200: "values"
+            }
+        },
+        "project/versions": {
+            API_RESOURCE: "project/{item_value}/versions",
+            API_QUERY_STRING: {"expand": "{expand}"}
+            # expand: issuesstatus, operations
+        },
+        "project/components": {
+            API_RESOURCE: "project/{item_value}/components"
         },
         "dashboard": {API_RETURN: {200: ["dashboards", None]}},
         "dashboard/search": {API_RETURN: {200: "values"}},

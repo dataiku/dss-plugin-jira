@@ -23,7 +23,7 @@
         },
         {
             "name": "token_access",
-            "label": "Token API access",
+            "label": "Jira connection",
             "type": "PRESET",
             "parameterSetId": "basic-auth",
             "visibilityCondition": "model.access_type == 'token_access'"
@@ -32,11 +32,11 @@
             "name": "edge_name",
             "label": "Item type",
             "type": "SELECT",
-            "defaultValue": "issue",
+            "defaultValue": "search",
             "selectChoices": [
                 {
-                    "value": "issue",
-                    "label": "Core: Issue"
+                    "value": "search",
+                    "label": "Core: Search issues"
                 },
                 {
                     "value": "dashboard",
@@ -51,8 +51,16 @@
                     "label": "Core: Field"
                 },
                 {
-                    "value": "search",
-                    "label": "Core: Search issues"
+                    "value": "project/search",
+                    "label": "Core: Search project"
+                },
+                {
+                    "value": "project/versions",
+                    "label": "Core: Search project's versions"
+                },
+                {
+                    "value": "project/components",
+                    "label": "Core: Search project's components"
                 },
                 {
                     "value": "board/epic",
@@ -110,10 +118,24 @@
         },
         {
             "name": "item_value",
-            "label": "Issue ID or key",
+            "label": "Project ID",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'issue'"
+            "visibilityCondition": "['project/versions', 'project/components'].indexOf(model.edge_name) >= 0"
+        },
+        {
+            "name": "item_value",
+            "label": "JQL search query",
+            "type": "STRING",
+            "defaultValue": "",
+            "visibilityCondition": "model.edge_name == 'issue(JQL)'"
+        },
+        {
+            "name": "item_value",
+            "label": "Filter ID",
+            "type": "STRING",
+            "defaultValue": "",
+            "visibilityCondition": "model.edge_name == 'issue(Filter)'"
         },
         {
             "name": "item_value",
@@ -140,7 +162,7 @@
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['issue'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['issue(JQL)', 'issue(Filter)'].indexOf(model.edge_name) >= 0",
             "selectChoices": [
                 {"value": "changelog", "label": "Change logs"},
                 {"value": "renderedFields", "label": "Rendered fields"},
@@ -149,6 +171,30 @@
                 {"value": "operations", "label": "Operations"},
                 {"value": "editmeta", "label": "Edit meta"},
                 {"value": "versionedRepresentations", "label": "Versioned representations"}
+            ]
+        },
+        {
+            "name": "expand",
+            "label": "Expand",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['project/search'].indexOf(model.edge_name) >= 0",
+            "selectChoices": [
+                {"value": "description", "label": "Change logs"},
+                {"value": "projectKeys", "label": "Project Keys"},
+                {"value": "lead", "label": "Lead"},
+                {"value": "issueTypes", "label": "Issue types"},
+                {"value": "url", "label": "URL"},
+                {"value": "insight", "label": "Insight"}
+            ]
+        },
+        {
+            "name": "expand",
+            "label": "Expand",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['project/versions'].indexOf(model.edge_name) >= 0",
+            "selectChoices": [
+                {"value": "issuesstatus", "label": "Issue status"},
+                {"value": "operations", "label": "Operations"}
             ]
         },
         {

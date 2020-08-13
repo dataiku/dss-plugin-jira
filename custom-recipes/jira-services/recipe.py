@@ -19,7 +19,7 @@ id_list = dataiku.Dataset(input_A_names[0])
 id_list_df = id_list.get_dataframe()
 results = []
 for index, row in id_list_df.iterrows():
-    data = client.get_edge(edge_name, row[id_column_name], "", expand=expand)
+    data = client.get_edge(edge_name, row[id_column_name], "", expand=expand, raise_exception=False)
     while len(data) > 0:
         for result in data:
             results.append(client.format(result))

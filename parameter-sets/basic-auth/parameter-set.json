@@ -1,6 +1,6 @@
 {
     "meta" : {
-        "label": "Jira API token",
+        "label": "Jira connection",
         "description": "Connect to Jira using your user name / API token",
         "icon": "icon-ticket"
     },
@@ -24,7 +24,7 @@
             "name": "subdomain",
             "label": "Subdomain",
             "type": "STRING",
-            "description": "Usually your company name",
+            "description": "First part of your URL: https://<subdomain>.atlassian.net",
             "defaultValue" : "",
             "visibilityCondition": "model.server_type == 'cloud'"
         },
