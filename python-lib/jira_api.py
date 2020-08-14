@@ -66,7 +66,8 @@ edge_descriptors = {
             API_QUERY_STRING: {"expand": "{expand}"},
             # expand: description, projectKeyrs, lead, issueTypes, url, insight
             API_RETURN: {
-                200: "values"
+                200: "values",
+                404: "Item not found"
             }
         },
         "project/versions": {
