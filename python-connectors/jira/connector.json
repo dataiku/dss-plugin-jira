@@ -52,15 +52,15 @@
                 },
                 {
                     "value": "project/search",
-                    "label": "Core: Search project"
+                    "label": "Core: Projects"
                 },
                 {
                     "value": "project/versions",
-                    "label": "Core: Search project's versions"
+                    "label": "Core: Project's versions"
                 },
                 {
                     "value": "project/components",
-                    "label": "Core: Search project's components"
+                    "label": "Core: Project's components"
                 },
                 {
                     "value": "board/epic",
@@ -118,7 +118,7 @@
         },
         {
             "name": "item_value",
-            "label": "Project ID",
+            "label": "Project key",
             "type": "STRING",
             "defaultValue": "",
             "visibilityCondition": "['project/versions', 'project/components'].indexOf(model.edge_name) >= 0"

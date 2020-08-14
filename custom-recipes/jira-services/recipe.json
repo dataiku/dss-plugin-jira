@@ -75,11 +75,11 @@
                 },
                 {
                     "value": "project/versions",
-                    "label": "Core: Search project's versions"
+                    "label": "Core: Project's versions"
                 },
                 {
                     "value": "project/components",
-                    "label": "Core: Search project's components"
+                    "label": "Core: Project's components"
                 },
                 {
                     "value": "board/epic",
