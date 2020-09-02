@@ -22,7 +22,15 @@ COLUMN_CLEANING = "column_cleaning"
 COLUMN_EXPANDING = "column_expending"
 ITEM_VALUE = "{item_value}"
 DEFAULT_COLUMNS_TO_EXPAND = ["changelog", "fields", "renderedFields", "names", "schema", "operations", "editmeta", "versionedRepresentations"]
-
+PAGINATION = "pagination"
+JIRA_CORE_PAGINATION = {
+    "skip_key": "startAt",
+    "limit_key": "maxResults",
+    "total_key": "total"
+}
+JIRA_SERVICE_DESK_PAGINATION = {
+    "next_page_key": ["_links", "next"]
+}
 
 edge_descriptors = {
     API_DEFAULT_DESCRIPTOR: {
@@ -35,7 +43,8 @@ edge_descriptors = {
             404: "Item {item_value} not found",
             500: "Jira Internal Server Error"
         },
-        COLUMN_EXPANDING: DEFAULT_COLUMNS_TO_EXPAND
+        COLUMN_EXPANDING: DEFAULT_COLUMNS_TO_EXPAND,
+        PAGINATION: JIRA_CORE_PAGINATION
     },
     "edge_name": {
         "issue": {
@@ -105,7 +114,8 @@ edge_descriptors = {
             API_RETURN: {
                 200: "values",
                 404: "Organization ID {item_value} does not exists"
-            }
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
         "organization/user": {
             API: JIRA_SERVICE_DESK_URL,
@@ -113,7 +123,8 @@ edge_descriptors = {
             API_RETURN: {
                 200: "values",
                 404: "Organization ID {item_value} does not exists"
-            }
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
         "servicedesk/organization": {
             API: JIRA_SERVICE_DESK_URL,
@@ -121,13 +132,15 @@ edge_descriptors = {
             API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
-            }
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
         "request": {
             API: JIRA_SERVICE_DESK_URL,
             API_RETURN: {
                 200: ["values", None]
-            }
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
         "servicedesk": {
             API: JIRA_SERVICE_DESK_URL,
@@ -135,7 +148,8 @@ edge_descriptors = {
             API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
-            }
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
         "servicedesk/customer": {
             API: JIRA_SERVICE_DESK_URL,
@@ -143,7 +157,8 @@ edge_descriptors = {
             API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
-            }
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
         "servicedesk/queue": {
             API: JIRA_SERVICE_DESK_URL,
@@ -151,7 +166,8 @@ edge_descriptors = {
             API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
-            }
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
         "servicedesk/queue/issue": {
             API: JIRA_SERVICE_DESK_URL,
@@ -159,7 +175,8 @@ edge_descriptors = {
             API_RETURN: {
                 200: "values",
                 404: "Service Desk ID {item_value} or queue ID {queue_id} do not exist"
-            }
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
         "board": {
             API: JIRA_SOFTWARE_URL,

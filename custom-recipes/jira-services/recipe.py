@@ -23,7 +23,7 @@ for index, row in id_list_df.iterrows():
     while len(data) > 0:
         for result in data:
             results.append(client.format(result))
-        if client.has_next_page():
+        if client.pagination.is_next_page():
             data = client.get_next_page()
         else:
             break

@@ -4,6 +4,7 @@ import logging
 import json
 import os
 import jira_api
+from pagination import Pagination
 
 FILTERING_KEY_WITHOUT_PARAMETER = 0
 FILTERING_KEY_WITH_PARAMETER = 1
@@ -29,7 +30,8 @@ class JiraClient(object):
         self.subdomain = connection_details.get("subdomain")
         self.ignore_ssl_check = connection_details.get("ignore_ssl_check", False)
         self.site_url = self.get_site_url()
-        self.next_page_url = None
+        self.params = {}
+        self.pagination = Pagination()
         self.api = jira_api
 
     def normalize_url(self, url):
@@ -82,8 +84,10 @@ class JiraClient(object):
 
     def get_edge(self, edge_name, item_value, data, queue_id=None, expand=[], raise_exception=True):
         self.edge_name = edge_name
-        query_string = self.get_query_string(edge_name, item_value, queue_id, expand)
-        response = self.get(self.get_url(edge_name, item_value, queue_id) + query_string, data)
+        self.params = self.get_params(edge_name, item_value, queue_id, expand)
+        url = self.get_url(edge_name, item_value, queue_id)
+        self.start_paging(edge_name=edge_name, counting_key=self.get_data_filter_key(edge_name), url=url)
+        response = self.get(url, data, params=self.params)
         if response.status_code >= 400:
             error_template = self.get_error_messages_template(edge_name, response.status_code)
             jira_error_message = self.get_jira_error_message(response)
@@ -98,26 +102,32 @@ class JiraClient(object):
                 return [{"error": error_message}]
 
         data = response.json()
-        self.update_next_page(data)
+        self.pagination.update_next_page(data)
         return self.filter_data(data, edge_name, item_value)
 
-    def get_query_string(self, edge_name, item_value, queue_id, expand=[]):
+    def start_paging(self, edge_name, counting_key, url):
+        pagination_config = self.get_pagination_config(edge_name)
+        self.pagination.configure_paging(pagination_config)
+        self.pagination.reset_paging(counting_key=self.get_data_filter_key(edge_name), url=url)
+
+    def get_params(self, edge_name, item_value, queue_id, expand=[]):
+        ret = {}
         query_string_dict = self.get_query_string_dict(edge_name)
-        query_string_tokens = []
         for key in query_string_dict:
             query_string_template = query_string_dict[key]
             query_string_value = query_string_template.format(edge_name=edge_name, item_value=item_value, queue_id=queue_id, expand=",".join(expand))
-            if query_string_value is not None and query_string_value != "" and query_string_value != "[]":
-                query_string_tokens.append("{}={}".format(key, query_string_value))
-        if len(query_string_tokens) > 0:
-            return "?" + "&".join(query_string_tokens)
-        else:
-            return ""
+            ret.update({key: query_string_value})
+        return ret
 
     def get_query_string_dict(self, edge_name):
         edge_descriptor = self.get_edge_descriptor(edge_name)
         query_string_template = edge_descriptor.get(self.api.API_QUERY_STRING, {})
         return query_string_template
+
+    def get_pagination_config(self, edge_name):
+        edge_descriptor = self.get_edge_descriptor(edge_name)
+        pagination_config = edge_descriptor.get(self.api.PAGINATION, {})
+        return pagination_config
 
     def get_jira_error_message(self, response):
         try:
@@ -214,7 +224,8 @@ class JiraClient(object):
         else:
             return [data]
 
-    def get(self, url, data=None):
+    def get(self, url, data=None, params=None):
+        params = {} if params is None else params
         args = {}
         headers = self.get_headers()
         if headers is not None:
@@ -226,6 +237,9 @@ class JiraClient(object):
             args.update({"data": data})
         if self.ignore_ssl_check:
             args.update({"verify": False})
+        params.update(self.pagination.get_params())
+        if params != {}:
+            args.update({"params": params})
         logger.info("Access Jira on endppoint {}".format(url))
         response = requests.get(url, **args)
         return response
@@ -246,35 +260,15 @@ class JiraClient(object):
     def get_auth_headers(self):
         return "GenieKey {}".format(self.password)
 
-    def update_next_page(self, data):
-        if self.is_last_page(data):
-            self.next_page_url = None
-        else:
-            if self.api.JIRA_PAGING in data and self.api.JIRA_NEXT in data[self.api.JIRA_PAGING]:
-                self.next_page_url = data[self.api.JIRA_PAGING][self.api.JIRA_NEXT]
-            elif self.api.JIRA_OPSGENIE_PAGING in data and self.api.JIRA_NEXT in data[self.api.JIRA_OPSGENIE_PAGING]:
-                self.next_page_url = data[self.api.JIRA_OPSGENIE_PAGING][self.api.JIRA_NEXT]
-            else:
-                self.next_page_url = None
-
-    def is_last_page(self, data):
-        if self.is_opsgenie_api():
-            return self.api.JIRA_OPSGENIE_PAGING not in data or self.api.JIRA_NEXT not in data[self.api.JIRA_OPSGENIE_PAGING]
-        else:
-            return (self.api.JIRA_IS_LAST_PAGE in data) and (data[self.api.JIRA_IS_LAST_PAGE])
-
     def get_next_page(self):
         logger.info("Loading next page")
-        response = self.get(self.next_page_url)
+        response = self.get(self.pagination.get_next_page_url(), params=self.params)
         if response.status_code >= 400:
             error_message = self.get_error_messages_template(self.edge_name, response.status_code).format(edge_name=self.edge_name)
             raise Exception("{}".format(error_message))
         data = response.json()
-        self.update_next_page(data)
+        self.pagination.update_next_page(data)
         return self.filter_data(data, self.edge_name, None)
-
-    def has_next_page(self):
-        return self.next_page_url is not None
 
 
 def update_dict(base_dict, extended_dict):

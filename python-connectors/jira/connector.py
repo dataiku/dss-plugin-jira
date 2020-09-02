@@ -38,7 +38,7 @@ class JiraConnector(Connector):
                 else:
                     counter = counter + 1
                 yield (self.client.format(result))
-            if self.client.has_next_page():
+            if self.client.pagination.is_next_page():
                 data = self.client.get_next_page()
             else:
                 break
