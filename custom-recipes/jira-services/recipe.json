@@ -5,6 +5,7 @@
         "icon": "icon-ticket"
     },
     "kind": "PYTHON",
+    "selectableFromDataset": "input_A_role",
     "inputRoles": [
         {
             "name": "input_A_role",
@@ -138,7 +139,8 @@
         {
             "name": "id_column_name",
             "label": "ID's column name",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the issues IDs to process",
             "defaultValue": "issueKey",
             "mandatory": true,
@@ -147,7 +149,8 @@
         {
             "name": "id_column_name",
             "label": "Dashboard ID",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the dashboard IDs to process",
             "defaultValue": "dashboardId",
             "mandatory": true,
@@ -156,7 +159,8 @@
         {
             "name": "id_column_name",
             "label": "Groups names' column name",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the groups names to process",
             "defaultValue": "groupName",
             "mandatory": true,
@@ -165,7 +169,8 @@
         {
             "name": "id_column_name",
             "label": "JQL searches' column name",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the JQL search strings",
             "defaultValue": "JQL",
             "mandatory": true,
@@ -174,7 +179,8 @@
         {
             "name": "id_column_name",
             "label": "ID's column name",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the organization IDs to process",
             "defaultValue": "organizationId",
             "mandatory": true,
@@ -183,7 +189,8 @@
         {
             "name": "id_column_name",
             "label": "ID's column name",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the service desk IDs to process",
             "defaultValue": "servicedeskId",
             "mandatory": true,
@@ -192,7 +199,8 @@
         {
             "name": "id_column_name",
             "label": "ID's column name",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the issue IDs or keys to process",
             "defaultValue": "issueKey",
             "mandatory": true,
@@ -201,7 +209,8 @@
         {
             "name": "id_column_name_2",
             "label": "Queue ID's column name",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the queue IDs to process",
             "defaultValue": "queueId",
             "mandatory": true,
@@ -210,7 +219,8 @@
         {
             "name": "id_column_name",
             "label": "ID's column name",
-            "type": "STRING",
+            "type": "COLUMN",
+            "columnRole": "input_A_role",
             "description": "Name of the column containing the IDs to process",
             "defaultValue": "boardId",
             "mandatory": true,
