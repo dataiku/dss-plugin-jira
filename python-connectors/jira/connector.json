@@ -29,7 +29,7 @@
             "visibilityCondition": "model.access_type == 'token_access'"
         },
         {
-            "name": "edge_name",
+            "name": "endpoint_name",
             "label": "Item type",
             "type": "SELECT",
             "defaultValue": "search",
@@ -121,48 +121,48 @@
             "label": "Project key",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "['project/versions', 'project/components'].indexOf(model.edge_name) >= 0"
+            "visibilityCondition": "['project/versions', 'project/components'].indexOf(model.endpoint_name) >= 0"
         },
         {
             "name": "item_value",
             "label": "JQL search query",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'issue(JQL)'"
+            "visibilityCondition": "model.endpoint_name == 'issue(JQL)'"
         },
         {
             "name": "item_value",
             "label": "Filter ID",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'issue(Filter)'"
+            "visibilityCondition": "model.endpoint_name == 'issue(Filter)'"
         },
         {
             "name": "item_value",
             "label": "Dashboard ID",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'dashboard'"
+            "visibilityCondition": "model.endpoint_name == 'dashboard'"
         },
         {
             "name": "item_value",
             "label": "Group name",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'group'"
+            "visibilityCondition": "model.endpoint_name == 'group'"
         },
         {
             "name": "item_value",
             "label": "JQL search query",
             "type": "STRING",
             "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'search' || model.edge_name == 'jql/match'"
+            "visibilityCondition": "model.endpoint_name == 'search' || model.endpoint_name == 'jql/match'"
         },
         {
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['issue(JQL)', 'issue(Filter)'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['issue(JQL)', 'issue(Filter)'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "changelog", "label": "Change logs"},
                 {"value": "renderedFields", "label": "Rendered fields"},
@@ -177,7 +177,7 @@
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['project/search'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['project/search'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "description", "label": "Change logs"},
                 {"value": "projectKeys", "label": "Project Keys"},
@@ -191,7 +191,7 @@
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['project/versions'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['project/versions'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "issuesstatus", "label": "Issue status"},
                 {"value": "operations", "label": "Operations"}
@@ -201,7 +201,7 @@
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['search', 'board/issue', 'epic/none/issue'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['search', 'board/issue', 'epic/none/issue'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "changelog", "label": "Change logs"},
                 {"value": "renderedFields", "label": "Rendered fields"},
@@ -215,42 +215,42 @@
             "label": "Organization ID",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'organization/user'"
+            "visibilityCondition": "model.endpoint_name == 'organization/user'"
         },
         {
             "name": "item_value",
             "label": "Service Desk ID",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name == 'servicedesk/organization'"
+            "visibilityCondition": "model.endpoint_name == 'servicedesk/organization'"
         },
         {
             "name": "item_value",
             "label": "Issue Key or ID",
             "type": "STRING",
             "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'request'"
+            "visibilityCondition": "model.endpoint_name == 'request'"
         },
         {
             "name": "item_value",
             "label": "Service desk ID",
             "type": "STRING",
             "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'servicedesk/customer' || model.edge_name == 'servicedesk/queue' || model.edge_name == 'servicedesk/queue/issue'"
+            "visibilityCondition": "model.endpoint_name == 'servicedesk/customer' || model.endpoint_name == 'servicedesk/queue' || model.endpoint_name == 'servicedesk/queue/issue'"
         },
         {
             "name": "queue_id",
             "label": "Queue ID",
             "type": "STRING",
             "defaultValue": null,
-            "visibilityCondition": "model.edge_name == 'servicedesk/queue/issue'"
+            "visibilityCondition": "model.endpoint_name == 'servicedesk/queue/issue'"
         },
         {
             "name": "item_value",
             "label": "Board ID",
             "type": "STRING",
             "defaultValue": "",
-            "visibilityCondition": "model.edge_name.startsWith('board/')"
+            "visibilityCondition": "model.endpoint_name.startsWith('board/')"
         }
     ]
 }

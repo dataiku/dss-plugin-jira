@@ -15,7 +15,7 @@ class JiraConnector(Connector):
         logging.info("JiraConnector init")
         self.access_type = self.config.get("access_type", "token_access")
         self.connection_details = self.config.get(self.access_type)
-        self.edge_name = self.config.get("edge_name", "")
+        self.endpoint_name = self.config.get("endpoint_name", "")
         self.item_value = self.config.get("item_value", "")
         self.data = self.config.get("data", None)
         self.queue_id = self.config.get("queue_id", None)
@@ -28,8 +28,8 @@ class JiraConnector(Connector):
     def generate_rows(self, dataset_schema=None, dataset_partitioning=None,
                       partition_id=None, records_limit=-1):
         logger.info("JiraConnector:generate_rows")
-        self.client.start_session(self.edge_name)
-        data = self.client.get_edge(self.edge_name, self.item_value, self.data, queue_id=self.queue_id, expand=self.expand)
+        self.client.start_session(self.endpoint_name)
+        data = self.client.get_endpoint(self.endpoint_name, self.item_value, self.data, queue_id=self.queue_id, expand=self.expand)
         while len(data) > 0:
             counter = 0
             for result in data:

@@ -49,7 +49,7 @@
             "visibilityCondition": "model.access_type == 'token_access'"
         },
         {
-            "name": "edge_name",
+            "name": "endpoint_name",
             "label": "Item type",
             "type": "SELECT",
             "defaultValue": "issue",
@@ -143,7 +143,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the issues IDs to process",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name== 'issue'"
+            "visibilityCondition": "model.endpoint_name== 'issue'"
         },
         {
             "name": "id_column_name",
@@ -152,7 +152,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the dashboard IDs to process",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name== 'dashboard/search'"
+            "visibilityCondition": "model.endpoint_name== 'dashboard/search'"
         },
         {
             "name": "id_column_name",
@@ -161,7 +161,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the groups names to process",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name== 'group'"
+            "visibilityCondition": "model.endpoint_name== 'group'"
         },
         {
             "name": "id_column_name",
@@ -170,7 +170,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the JQL search strings",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name== 'search'"
+            "visibilityCondition": "model.endpoint_name== 'search'"
         },
         {
             "name": "id_column_name",
@@ -179,7 +179,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the organization IDs to process",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name.startsWith('organization')"
+            "visibilityCondition": "model.endpoint_name.startsWith('organization')"
         },
         {
             "name": "id_column_name",
@@ -188,7 +188,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the service desk IDs to process",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name.startsWith('servicedesk')"
+            "visibilityCondition": "model.endpoint_name.startsWith('servicedesk')"
         },
         {
             "name": "id_column_name",
@@ -197,7 +197,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the issue IDs or keys to process",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name.startsWith('request')"
+            "visibilityCondition": "model.endpoint_name.startsWith('request')"
         },
         {
             "name": "id_column_name_2",
@@ -206,7 +206,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the queue IDs to process",
             "mandatory": true,
-            "visibilityCondition": "model.edge_name == 'servicedesk/queue/issue'"
+            "visibilityCondition": "model.endpoint_name == 'servicedesk/queue/issue'"
         },
         {
             "name": "id_column_name",
@@ -215,13 +215,13 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the IDs to process",
             "mandatory": true,
-            "visibilityCondition": "['board', 'project/versions', 'project/components'].indexOf(model.edge_name) >= 0"
+            "visibilityCondition": "['board', 'project/versions', 'project/components'].indexOf(model.endpoint_name) >= 0"
         },
         {
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['issue'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['issue'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "changelog", "label": "Change logs"},
                 {"value": "renderedFields", "label": "Rendered fields"},
@@ -236,7 +236,7 @@
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['search', 'board/issue', 'epic/none/issue'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['search', 'board/issue', 'epic/none/issue'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "changelog", "label": "Change logs"},
                 {"value": "renderedFields", "label": "Rendered fields"},
@@ -249,7 +249,7 @@
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['project/search'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['project/search'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "description", "label": "Change logs"},
                 {"value": "projectKeys", "label": "Project Keys"},
@@ -263,7 +263,7 @@
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['project/versions'].indexOf(model.edge_name) >= 0",
+            "visibilityCondition": "['project/versions'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "issuesstatus", "label": "Issue status"},
                 {"value": "operations", "label": "Operations"}

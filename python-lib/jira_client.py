@@ -38,12 +38,12 @@ class JiraClient(object):
         url = os.path.join(url, '')
         return url
 
-    def start_session(self, edge_name):
-        self.edge_name = edge_name
-        self.edge_descriptor = self.get_edge_descriptor(edge_name)
-        self.formating = self.edge_descriptor.get(self.api.COLUMN_FORMATING, [])
-        self.expanding = self.edge_descriptor.get(self.api.COLUMN_EXPANDING, [])
-        self.cleaning = self.edge_descriptor.get(self.api.COLUMN_CLEANING, [])
+    def start_session(self, endpoint_name):
+        self.endpoint_name = endpoint_name
+        self.endpoint_descriptor = self.get_endpoint_descriptor(endpoint_name)
+        self.formating = self.endpoint_descriptor.get(self.api.COLUMN_FORMATING, [])
+        self.expanding = self.endpoint_descriptor.get(self.api.COLUMN_EXPANDING, [])
+        self.cleaning = self.endpoint_descriptor.get(self.api.COLUMN_CLEANING, [])
         if self.formating == [] and self.expanding == [] and self.cleaning == []:
             self.format = self.return_data
         else:
@@ -61,37 +61,37 @@ class JiraClient(object):
     def is_opsgenie_api(self):
         return self.api_name == "opsgenie"
 
-    def get_url(self, edge_name, item_value, queue_id):
-        edge_descriptor = self.get_edge_descriptor(edge_name)
-        api_url = edge_descriptor[self.api.API]
-        return api_url.format(site_url=self.site_url, resource_name=self.get_resource_name(edge_name, item_value, queue_id))
+    def get_url(self, endpoint_name, item_value, queue_id):
+        endpoint_descriptor = self.get_endpoint_descriptor(endpoint_name)
+        api_url = endpoint_descriptor[self.api.API]
+        return api_url.format(site_url=self.site_url, resource_name=self.get_resource_name(endpoint_name, item_value, queue_id))
 
-    def get_resource_name(self, edge_name, item_value, queue_id):
+    def get_resource_name(self, endpoint_name, item_value, queue_id):
         if item_value is not None:
-            ressource_structure = self.get_ressource_structure(edge_name)
+            ressource_structure = self.get_ressource_structure(endpoint_name)
             args = {
-                "edge_name": edge_name,
+                "endpoint_name": endpoint_name,
                 "item_value": item_value,
                 "queue_id": queue_id
             }
             return ressource_structure.format(**args)
         else:
-            return "{}".format(edge_name)
+            return "{}".format(endpoint_name)
 
-    def get_ressource_structure(self, edge_name):
-        edge_descriptor = self.get_edge_descriptor(edge_name)
-        return edge_descriptor[self.api.API_RESOURCE]
+    def get_ressource_structure(self, endpoint_name):
+        endpoint_descriptor = self.get_endpoint_descriptor(endpoint_name)
+        return endpoint_descriptor[self.api.API_RESOURCE]
 
-    def get_edge(self, edge_name, item_value, data, queue_id=None, expand=[], raise_exception=True):
-        self.edge_name = edge_name
-        self.params = self.get_params(edge_name, item_value, queue_id, expand)
-        url = self.get_url(edge_name, item_value, queue_id)
-        self.start_paging(edge_name=edge_name, counting_key=self.get_data_filter_key(edge_name), url=url)
+    def get_endpoint(self, endpoint_name, item_value, data, queue_id=None, expand=[], raise_exception=True):
+        self.endpoint_name = endpoint_name
+        self.params = self.get_params(endpoint_name, item_value, queue_id, expand)
+        url = self.get_url(endpoint_name, item_value, queue_id)
+        self.start_paging(endpoint_name=endpoint_name, counting_key=self.get_data_filter_key(endpoint_name), url=url)
         response = self.get(url, data, params=self.params)
         if response.status_code >= 400:
-            error_template = self.get_error_messages_template(edge_name, response.status_code)
+            error_template = self.get_error_messages_template(endpoint_name, response.status_code)
             jira_error_message = self.get_jira_error_message(response)
-            error_message = error_template.format(edge_name=edge_name,
+            error_message = error_template.format(endpoint_name=endpoint_name,
                                                   item_value=item_value,
                                                   queue_id=queue_id,
                                                   status_code=response.status_code,
@@ -103,30 +103,31 @@ class JiraClient(object):
 
         data = response.json()
         self.pagination.update_next_page(data)
-        return self.filter_data(data, edge_name, item_value)
+        return self.filter_data(data, endpoint_name, item_value)
 
-    def start_paging(self, edge_name, counting_key, url):
-        pagination_config = self.get_pagination_config(edge_name)
+    def start_paging(self, endpoint_name, counting_key, url):
+        pagination_config = self.get_pagination_config(endpoint_name)
         self.pagination.configure_paging(pagination_config)
-        self.pagination.reset_paging(counting_key=self.get_data_filter_key(edge_name), url=url)
+        print("ALX:endpoint_name={}, self.get_data_filter_key(endpoint_name)={}".format(endpoint_name, self.get_data_filter_key(endpoint_name)))
+        self.pagination.reset_paging(counting_key=self.get_data_filter_key(endpoint_name), url=url)
 
-    def get_params(self, edge_name, item_value, queue_id, expand=[]):
+    def get_params(self, endpoint_name, item_value, queue_id, expand=[]):
         ret = {}
-        query_string_dict = self.get_query_string_dict(edge_name)
+        query_string_dict = self.get_query_string_dict(endpoint_name)
         for key in query_string_dict:
             query_string_template = query_string_dict[key]
-            query_string_value = query_string_template.format(edge_name=edge_name, item_value=item_value, queue_id=queue_id, expand=",".join(expand))
+            query_string_value = query_string_template.format(endpoint_name=endpoint_name, item_value=item_value, queue_id=queue_id, expand=",".join(expand))
             ret.update({key: query_string_value})
         return ret
 
-    def get_query_string_dict(self, edge_name):
-        edge_descriptor = self.get_edge_descriptor(edge_name)
-        query_string_template = edge_descriptor.get(self.api.API_QUERY_STRING, {})
+    def get_query_string_dict(self, endpoint_name):
+        endpoint_descriptor = self.get_endpoint_descriptor(endpoint_name)
+        query_string_template = endpoint_descriptor.get(self.api.API_QUERY_STRING, {})
         return query_string_template
 
-    def get_pagination_config(self, edge_name):
-        edge_descriptor = self.get_edge_descriptor(edge_name)
-        pagination_config = edge_descriptor.get(self.api.PAGINATION, {})
+    def get_pagination_config(self, endpoint_name):
+        endpoint_descriptor = self.get_endpoint_descriptor(endpoint_name)
+        pagination_config = endpoint_descriptor.get(self.api.PAGINATION, {})
         return pagination_config
 
     def get_jira_error_message(self, response):
@@ -139,14 +140,14 @@ class JiraClient(object):
         except Exception:
             return response.text
 
-    def get_edge_descriptor(self, edge_name):
-        edge_descriptor = copy.deepcopy(self.api.edge_descriptors[self.api.API_DEFAULT_DESCRIPTOR])
-        if edge_name in self.api.edge_descriptors[self.api.API_EDGE_NAME]:
-            update_dict(edge_descriptor, self.api.edge_descriptors[self.api.API_EDGE_NAME][edge_name])
-        return edge_descriptor
+    def get_endpoint_descriptor(self, endpoint_name):
+        endpoint_descriptor = copy.deepcopy(self.api.endpoint_descriptors[self.api.API_DEFAULT_DESCRIPTOR])
+        if endpoint_name in self.api.endpoint_descriptors[self.api.API_ENDPOINT_NAME]:
+            update_dict(endpoint_descriptor, self.api.endpoint_descriptors[self.api.API_ENDPOINT_NAME][endpoint_name])
+        return endpoint_descriptor
 
-    def filter_data(self, data, edge_name, item_value):
-        filtering_key = self.get_data_filter_key(edge_name)
+    def filter_data(self, data, endpoint_name, item_value):
+        filtering_key = self.get_data_filter_key(endpoint_name)
         if isinstance(filtering_key, list):
             if item_value == "":
                 filtering_key = filtering_key[FILTERING_KEY_WITHOUT_PARAMETER]
@@ -200,19 +201,19 @@ class JiraClient(object):
                 return None
         return pointer
 
-    def get_data_filter_key(self, edge_name):
-        edge_descriptor = self.get_edge_descriptor(edge_name)
-        if (self.api.API_RETURN in edge_descriptor) and (200 in edge_descriptor[self.api.API_RETURN]):
-            key = edge_descriptor[self.api.API_RETURN][200]
+    def get_data_filter_key(self, endpoint_name):
+        endpoint_descriptor = self.get_endpoint_descriptor(endpoint_name)
+        if (self.api.API_RETURN in endpoint_descriptor) and (200 in endpoint_descriptor[self.api.API_RETURN]):
+            key = endpoint_descriptor[self.api.API_RETURN][200]
         else:
             key = None
         return key
 
-    def get_error_messages_template(self, edge_name, status_code):
-        edge_descriptor = self.get_edge_descriptor(edge_name)
-        error_messages_template = self.api.edge_descriptors[self.api.API_DEFAULT_DESCRIPTOR][self.api.API_RETURN]
-        if self.api.API_RETURN in edge_descriptor:
-            update_dict(error_messages_template, edge_descriptor[self.api.API_RETURN])
+    def get_error_messages_template(self, endpoint_name, status_code):
+        endpoint_descriptor = self.get_endpoint_descriptor(endpoint_name)
+        error_messages_template = self.api.endpoint_descriptors[self.api.API_DEFAULT_DESCRIPTOR][self.api.API_RETURN]
+        if self.api.API_RETURN in endpoint_descriptor:
+            update_dict(error_messages_template, endpoint_descriptor[self.api.API_RETURN])
         if status_code in error_messages_template:
             return error_messages_template[status_code]
         else:
@@ -264,11 +265,11 @@ class JiraClient(object):
         logger.info("Loading next page")
         response = self.get(self.pagination.get_next_page_url(), params=self.params)
         if response.status_code >= 400:
-            error_message = self.get_error_messages_template(self.edge_name, response.status_code).format(edge_name=self.edge_name)
+            error_message = self.get_error_messages_template(self.endpoint_name, response.status_code).format(endpoint_name=self.endpoint_name)
             raise Exception("{}".format(error_message))
         data = response.json()
         self.pagination.update_next_page(data)
-        return self.filter_data(data, self.edge_name, None)
+        return self.filter_data(data, self.endpoint_name, None)
 
 
 def update_dict(base_dict, extended_dict):

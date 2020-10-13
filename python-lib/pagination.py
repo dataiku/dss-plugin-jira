@@ -11,6 +11,7 @@ class Pagination(object):
         self.pagination_style = ""
         self.counting_key = None
         self.counter = None
+        self.is_data_single_dict = None
 
     def configure_paging(self, config=None, skip_key=None, limit_key=None, total_key=None, next_page_key=None, url=None):
         config = {} if config is None else config
@@ -25,6 +26,7 @@ class Pagination(object):
         self.counting_key = counting_key
         self.counter = 0
         self.next_page_url = url
+        self.is_data_single_dict = False
 
     def set_counting_key(self, counting_key):
         self.counting_key = counting_key
@@ -37,7 +39,8 @@ class Pagination(object):
         elif self.counting_key:
             batch_size = len(data.get(self.counting_key))
         else:
-            batch_size = None
+            self.is_data_single_dict = True
+            return
         if self.next_page_key:
             self.next_page_url = self.get_from_path(data, self.next_page_key)
         if self.skip_key:
@@ -52,16 +55,18 @@ class Pagination(object):
 
     def get_from_path(self, dictionary, path):
         if isinstance(path, list):
-            edge = dictionary
+            endpoint = dictionary
             for key in path:
-                edge = edge.get(key)
-                if edge is None:
+                endpoint = endpoint.get(key)
+                if endpoint is None:
                     return None
-            return edge
+            return endpoint
         else:
             return dictionary.get(path)
 
     def is_next_page(self):
+        if self.is_data_single_dict:
+            return False
         if self.next_page_key:
             ret = (self.next_page_url is not None) and (self.next_page_url != "")
         else:

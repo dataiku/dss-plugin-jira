@@ -9,17 +9,17 @@ print("ALX:input_datasets_name={}".format(input_datasets_name))
 id_column_name = get_recipe_config()['id_column_name']
 access_type = get_recipe_config()['access_type']
 connection_details = get_recipe_config()[access_type]
-edge_name = get_recipe_config()['edge_name']
+endpoint_name = get_recipe_config()['endpoint_name']
 expand = get_recipe_config()['expand']
 
 client = JiraClient(connection_details)
-client.start_session(edge_name)
+client.start_session(endpoint_name)
 
 id_list = dataiku.Dataset(input_datasets_name[0])
 id_list_df = id_list.get_dataframe()
 results = []
 for index, row in id_list_df.iterrows():
-    data = client.get_edge(edge_name, row[id_column_name], "", expand=expand, raise_exception=False)
+    data = client.get_endpoint(endpoint_name, row[id_column_name], "", expand=expand, raise_exception=False)
     while len(data) > 0:
         for result in data:
             results.append(client.format(result))

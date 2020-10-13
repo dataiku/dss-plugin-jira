@@ -1,6 +1,6 @@
 API = "api"
 API_DEFAULT_DESCRIPTOR = "default"
-API_EDGE_NAME = "edge_name"
+API_ENDPOINT_NAME = "endpoint_name"
 API_ERROR_MESSAGES = "errorMessages"
 API_QUERY_STRING = "query_string"
 API_RESOURCE = "resource_name"
@@ -32,9 +32,9 @@ JIRA_SERVICE_DESK_URL = "{site_url}rest/servicedeskapi/{resource_name}"
 JIRA_SOFTWARE_URL = "{site_url}rest/agile/1.0/{resource_name}"
 PAGINATION = "pagination"
 
-edge_descriptors = {
+endpoint_descriptors = {
     API_DEFAULT_DESCRIPTOR: {
-        API_RESOURCE: "{edge_name}/{item_value}",
+        API_RESOURCE: "{endpoint_name}/{item_value}",
         API: JIRA_CORE_URL,
         API_RETURN: {
             200: None,
@@ -46,14 +46,14 @@ edge_descriptors = {
         COLUMN_EXPANDING: DEFAULT_COLUMNS_TO_EXPAND,
         PAGINATION: JIRA_CORE_PAGINATION
     },
-    "edge_name": {
+    "endpoint_name": {
         "dashboard": {API_RETURN: {200: ["dashboards", None]}},
         "dashboard/search": {API_RETURN: {200: "values"}},
         "field": {
-            API_RESOURCE: "{edge_name}",
+            API_RESOURCE: "{endpoint_name}",
         },
         "group": {
-            API_RESOURCE: "{edge_name}/member",
+            API_RESOURCE: "{endpoint_name}/member",
             API_QUERY_STRING: {"groupname": ITEM_VALUE},
             API_RETURN: {200: "values"}
         },
@@ -61,7 +61,7 @@ edge_descriptors = {
             API_QUERY_STRING: {"expand": "{expand}"}
         },
         "issue/createmeta": {
-            API_RESOURCE: "{edge_name}",
+            API_RESOURCE: "{endpoint_name}",
             API_RETURN: {
                 200: "projects"
             }
@@ -84,7 +84,7 @@ edge_descriptors = {
             API_RESOURCE: "project/{item_value}/components"
         },
         "project/search": {
-            API_RESOURCE: "{edge_name}",
+            API_RESOURCE: "{endpoint_name}",
             API_QUERY_STRING: {"expand": "{expand}"},
             # expand: description, projectKeyrs, lead, issueTypes, url, insight
             API_RETURN: {
@@ -135,7 +135,7 @@ edge_descriptors = {
         },
         "servicedesk": {
             API: JIRA_SERVICE_DESK_URL,
-            API_RESOURCE: "{edge_name}",
+            API_RESOURCE: "{endpoint_name}",
             API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
