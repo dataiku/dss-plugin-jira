@@ -3,9 +3,8 @@ import dataiku
 from dataiku.customrecipe import get_input_names_for_role, get_recipe_config, get_output_names_for_role
 from jira_client import JiraClient
 import pandas as pd
-print("ALX:get_recipe_config={}".format(get_recipe_config()))
+
 input_datasets_name = get_input_names_for_role('input_datasets_name')
-print("ALX:input_datasets_name={}".format(input_datasets_name))
 id_column_name = get_recipe_config()['id_column_name']
 access_type = get_recipe_config()['access_type']
 connection_details = get_recipe_config()[access_type]

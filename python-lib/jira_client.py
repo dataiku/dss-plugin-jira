@@ -108,7 +108,6 @@ class JiraClient(object):
     def start_paging(self, endpoint_name, counting_key, url):
         pagination_config = self.get_pagination_config(endpoint_name)
         self.pagination.configure_paging(pagination_config)
-        print("ALX:endpoint_name={}, self.get_data_filter_key(endpoint_name)={}".format(endpoint_name, self.get_data_filter_key(endpoint_name)))
         self.pagination.reset_paging(counting_key=self.get_data_filter_key(endpoint_name), url=url)
 
     def get_params(self, endpoint_name, item_value, queue_id, expand=[]):
