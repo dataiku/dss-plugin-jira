@@ -1,36 +1,36 @@
-JIRA_CORE_URL = "{site_url}rest/api/3/{resource_name}"
-JIRA_SERVICE_DESK_URL = "{site_url}rest/servicedeskapi/{resource_name}"
-JIRA_SOFTWARE_URL = "{site_url}rest/agile/1.0/{resource_name}"
-JIRA_OPSGENIE_URL = "api.opsgenie.com/{resource_name}"
-JIRA_SERVICE_DESK_ID_404 = "Service Desk ID {item_value} does not exists"
-JIRA_BOARD_ID_404 = "Board {item_value} does not exists or the user does not have permission to view it."
-JIRA_LICENSE_403 = "The user does not a have valid license"
-JIRA_OPSGENIE_402 = "The account cannot do this action because of subscription plan"
+API = "api"
 API_DEFAULT_DESCRIPTOR = "default"
 API_EDGE_NAME = "edge_name"
-API_RETURN = "on_return"
-API_RESOURCE = "resource_name"
-API = "api"
-API_QUERY_STRING = "query_string"
-JIRA_IS_LAST_PAGE = "isLastPage"
-JIRA_OPSGENIE_PAGING = "paging"
-JIRA_PAGING = "_links"
-JIRA_NEXT = "next"
 API_ERROR_MESSAGES = "errorMessages"
+API_QUERY_STRING = "query_string"
+API_RESOURCE = "resource_name"
+API_RETURN = "on_return"
 COLUMN_FORMATING = "column_formating"
 COLUMN_CLEANING = "column_cleaning"
 COLUMN_EXPANDING = "column_expending"
-ITEM_VALUE = "{item_value}"
 DEFAULT_COLUMNS_TO_EXPAND = ["changelog", "fields", "renderedFields", "names", "schema", "operations", "editmeta", "versionedRepresentations"]
-PAGINATION = "pagination"
+ITEM_VALUE = "{item_value}"
+JIRA_BOARD_ID_404 = "Board {item_value} does not exists or the user does not have permission to view it."
 JIRA_CORE_PAGINATION = {
     "skip_key": "startAt",
     "limit_key": "maxResults",
     "total_key": "total"
 }
+JIRA_CORE_URL = "{site_url}rest/api/3/{resource_name}"
+JIRA_IS_LAST_PAGE = "isLastPage"
+JIRA_LICENSE_403 = "The user does not a have valid license"
+JIRA_NEXT = "next"
+JIRA_OPSGENIE_402 = "The account cannot do this action because of subscription plan"
+JIRA_OPSGENIE_PAGING = "paging"
+JIRA_OPSGENIE_URL = "api.opsgenie.com/{resource_name}"
+JIRA_PAGING = "_links"
+JIRA_SERVICE_DESK_ID_404 = "Service Desk ID {item_value} does not exists"
 JIRA_SERVICE_DESK_PAGINATION = {
     "next_page_key": ["_links", "next"]
 }
+JIRA_SERVICE_DESK_URL = "{site_url}rest/servicedeskapi/{resource_name}"
+JIRA_SOFTWARE_URL = "{site_url}rest/agile/1.0/{resource_name}"
+PAGINATION = "pagination"
 
 edge_descriptors = {
     API_DEFAULT_DESCRIPTOR: {
@@ -47,14 +47,23 @@ edge_descriptors = {
         PAGINATION: JIRA_CORE_PAGINATION
     },
     "edge_name": {
+        "dashboard": {API_RETURN: {200: ["dashboards", None]}},
+        "dashboard/search": {API_RETURN: {200: "values"}},
+        "field": {
+            API_RESOURCE: "{edge_name}",
+        },
+        "group": {
+            API_RESOURCE: "{edge_name}/member",
+            API_QUERY_STRING: {"groupname": ITEM_VALUE},
+            API_RETURN: {200: "values"}
+        },
         "issue": {
             API_QUERY_STRING: {"expand": "{expand}"}
         },
-        "issue(JQL)": {
-            API_RESOURCE: "search",
-            API_QUERY_STRING: {"jql": ITEM_VALUE, "expand": "{expand}"},
+        "issue/createmeta": {
+            API_RESOURCE: "{edge_name}",
             API_RETURN: {
-                200: "issues"
+                200: "projects"
             }
         },
         "issue(Filter)": {
@@ -64,11 +73,15 @@ edge_descriptors = {
                 200: "issues"
             }
         },
-        "issue/createmeta": {
-            API_RESOURCE: "{edge_name}",
+        "issue(JQL)": {
+            API_RESOURCE: "search",
+            API_QUERY_STRING: {"jql": ITEM_VALUE, "expand": "{expand}"},
             API_RETURN: {
-                200: "projects"
+                200: "issues"
             }
+        },
+        "project/components": {
+            API_RESOURCE: "project/{item_value}/components"
         },
         "project/search": {
             API_RESOURCE: "{edge_name}",
@@ -84,19 +97,6 @@ edge_descriptors = {
             API_QUERY_STRING: {"expand": "{expand}"}
             # expand: issuesstatus, operations
         },
-        "project/components": {
-            API_RESOURCE: "project/{item_value}/components"
-        },
-        "dashboard": {API_RETURN: {200: ["dashboards", None]}},
-        "dashboard/search": {API_RETURN: {200: "values"}},
-        "group": {
-            API_RESOURCE: "{edge_name}/member",
-            API_QUERY_STRING: {"groupname": ITEM_VALUE},
-            API_RETURN: {200: "values"}
-        },
-        "field": {
-            API_RESOURCE: "{edge_name}",
-        },
         "search": {
             API_RESOURCE: "search",
             API_QUERY_STRING: {"jql": ITEM_VALUE, "expand": "{expand}"},
@@ -104,10 +104,10 @@ edge_descriptors = {
                 200: "issues"
             }
         },
+        "worklog/deleted": {},
         "worklog/list": {
             API_RESOURCE: "issue/{item_value}/worklog",
         },
-        "worklog/deleted": {},
         "organization": {
             API: JIRA_SERVICE_DESK_URL,
             API_RESOURCE: "organization",
@@ -123,15 +123,6 @@ edge_descriptors = {
             API_RETURN: {
                 200: "values",
                 404: "Organization ID {item_value} does not exists"
-            },
-            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
-        },
-        "servicedesk/organization": {
-            API: JIRA_SERVICE_DESK_URL,
-            API_RESOURCE: "servicedesk/{item_value}/organization",
-            API_RETURN: {
-                200: "values",
-                404: JIRA_SERVICE_DESK_ID_404
             },
             PAGINATION: JIRA_SERVICE_DESK_PAGINATION
         },
@@ -154,6 +145,15 @@ edge_descriptors = {
         "servicedesk/customer": {
             API: JIRA_SERVICE_DESK_URL,
             API_RESOURCE: "servicedesk/{item_value}/customer",
+            API_RETURN: {
+                200: "values",
+                404: JIRA_SERVICE_DESK_ID_404
+            },
+            PAGINATION: JIRA_SERVICE_DESK_PAGINATION
+        },
+        "servicedesk/organization": {
+            API: JIRA_SERVICE_DESK_URL,
+            API_RESOURCE: "servicedesk/{item_value}/organization",
             API_RETURN: {
                 200: "values",
                 404: JIRA_SERVICE_DESK_ID_404
@@ -186,22 +186,6 @@ edge_descriptors = {
                 404: JIRA_BOARD_ID_404
             }
         },
-        "board/epic": {
-            API: JIRA_SOFTWARE_URL,
-            API_RESOURCE: "board/{item_value}/epic",
-            API_RETURN: {
-                200: "values",
-                404: JIRA_BOARD_ID_404
-            }
-        },
-        "board/issue": {
-            API: JIRA_SOFTWARE_URL,
-            API_RESOURCE: "board/{item_value}/issue",
-            API_RETURN: {
-                200: "issues",
-                404: JIRA_BOARD_ID_404
-            }
-        },
         "board/backlog": {
             API: JIRA_SOFTWARE_URL,
             API_RESOURCE: "board/{item_value}/backlog",
@@ -210,9 +194,25 @@ edge_descriptors = {
                 404: JIRA_BOARD_ID_404
             }
         },
+        "board/epic": {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/epic",
+            API_RETURN: {
+                200: "values",
+                404: JIRA_BOARD_ID_404
+            }
+        },
         "board/epic/none/issue": {
             API: JIRA_SOFTWARE_URL,
             API_RESOURCE: "board/{item_value}/epic/none/issue",
+            API_RETURN: {
+                200: "issues",
+                404: JIRA_BOARD_ID_404
+            }
+        },
+        "board/issue": {
+            API: JIRA_SOFTWARE_URL,
+            API_RESOURCE: "board/{item_value}/issue",
             API_RETURN: {
                 200: "issues",
                 404: JIRA_BOARD_ID_404
