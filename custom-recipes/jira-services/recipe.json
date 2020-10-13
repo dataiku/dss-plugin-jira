@@ -5,10 +5,10 @@
         "icon": "icon-ticket"
     },
     "kind": "PYTHON",
-    "selectableFromDataset": "input_A_role",
+    "selectableFromDataset": "input_datasets_name",
     "inputRoles": [
         {
-            "name": "input_A_role",
+            "name": "input_datasets_name",
             "label": "Dataset containing IDs",
             "description": "",
             "arity": "UNARY",
@@ -140,9 +140,8 @@
             "name": "id_column_name",
             "label": "ID's column name",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the issues IDs to process",
-            "defaultValue": "issueKey",
             "mandatory": true,
             "visibilityCondition": "model.edge_name== 'issue'"
         },
@@ -150,9 +149,8 @@
             "name": "id_column_name",
             "label": "Dashboard ID",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the dashboard IDs to process",
-            "defaultValue": "dashboardId",
             "mandatory": true,
             "visibilityCondition": "model.edge_name== 'dashboard/search'"
         },
@@ -160,9 +158,8 @@
             "name": "id_column_name",
             "label": "Groups names' column name",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the groups names to process",
-            "defaultValue": "groupName",
             "mandatory": true,
             "visibilityCondition": "model.edge_name== 'group'"
         },
@@ -170,9 +167,8 @@
             "name": "id_column_name",
             "label": "JQL searches' column name",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the JQL search strings",
-            "defaultValue": "JQL",
             "mandatory": true,
             "visibilityCondition": "model.edge_name== 'search'"
         },
@@ -180,9 +176,8 @@
             "name": "id_column_name",
             "label": "ID's column name",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the organization IDs to process",
-            "defaultValue": "organizationId",
             "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('organization')"
         },
@@ -190,9 +185,8 @@
             "name": "id_column_name",
             "label": "ID's column name",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the service desk IDs to process",
-            "defaultValue": "servicedeskId",
             "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('servicedesk')"
         },
@@ -200,9 +194,8 @@
             "name": "id_column_name",
             "label": "ID's column name",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the issue IDs or keys to process",
-            "defaultValue": "issueKey",
             "mandatory": true,
             "visibilityCondition": "model.edge_name.startsWith('request')"
         },
@@ -210,9 +203,8 @@
             "name": "id_column_name_2",
             "label": "Queue ID's column name",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the queue IDs to process",
-            "defaultValue": "queueId",
             "mandatory": true,
             "visibilityCondition": "model.edge_name == 'servicedesk/queue/issue'"
         },
@@ -220,9 +212,8 @@
             "name": "id_column_name",
             "label": "ID's column name",
             "type": "COLUMN",
-            "columnRole": "input_A_role",
+            "columnRole": "input_datasets_name",
             "description": "Name of the column containing the IDs to process",
-            "defaultValue": "boardId",
             "mandatory": true,
             "visibilityCondition": "['board', 'project/versions', 'project/components'].indexOf(model.edge_name) >= 0"
         },
