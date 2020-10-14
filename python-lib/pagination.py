@@ -37,10 +37,21 @@ class Pagination(object):
             self.records_to_skip = self.records_to_skip + batch_size
             return
         elif self.counting_key:
-            batch_size = len(data.get(self.counting_key))
+            if isinstance(self.counting_key, list):
+                counting_key = self.extract_counting_key(data)
+                if counting_key is not None:
+                    batch_size = len(data.get(counting_key))
+                else:
+                    return
+            else:
+                batch_size = 1
+                return
         else:
             self.is_data_single_dict = True
             return
+        self.update_page_parameters(data, batch_size)
+
+    def update_page_parameters(self, data, batch_size):
         if self.next_page_key:
             self.next_page_url = self.get_from_path(data, self.next_page_key)
         if self.skip_key:
@@ -52,6 +63,13 @@ class Pagination(object):
         self.records_to_skip = self.records_to_skip + batch_size
         if self.total:
             self.remaining_records = self.total - self.records_to_skip
+
+    def extract_counting_key(self, data):
+        counting_key = None
+        for key in self.counting_key:
+            if key in data:
+                counting_key = key
+        return counting_key
 
     def get_from_path(self, dictionary, path):
         if isinstance(path, list):
