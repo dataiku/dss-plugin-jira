@@ -67,10 +67,6 @@
                     "label": "Core: Group"
                 },
                 {
-                    "value": "field",
-                    "label": "Core: Field"
-                },
-                {
                     "value": "search",
                     "label": "Core: Search issues"
                 },
@@ -101,10 +97,6 @@
                 {
                     "value": "board/version",
                     "label": "Software: All versions of a board"
-                },
-                {
-                    "value": "epic/none/issue",
-                    "label": "Software: All issues without epic"
                 },
                 {
                     "value": "organization",
