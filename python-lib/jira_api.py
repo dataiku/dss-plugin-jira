@@ -135,9 +135,9 @@ endpoint_descriptors = {
         },
         "servicedesk": {
             API: JIRA_SERVICE_DESK_URL,
-            API_RESOURCE: "{endpoint_name}",
+            API_RESOURCE: "{endpoint_name}/{item_value}",
             API_RETURN: {
-                200: "values",
+                200: ["values", None],
                 404: JIRA_SERVICE_DESK_ID_404
             },
             PAGINATION: JIRA_SERVICE_DESK_PAGINATION
