@@ -47,8 +47,9 @@ class Pagination(object):
                 if counting_key is not None:
                     batch_size = len(data.get(counting_key))
                 else:
-                    return
+                    batch_size = 1
             else:
+                self.is_last_page = True
                 batch_size = 1
                 return
         else:
