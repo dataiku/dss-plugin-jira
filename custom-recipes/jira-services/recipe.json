@@ -144,7 +144,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the dashboard IDs to process",
             "mandatory": true,
-            "visibilityCondition": "model.endpoint_name== 'dashboard/search'"
+            "visibilityCondition": "model.endpoint_name== 'dashboard'"
         },
         {
             "name": "id_column_name",
@@ -207,7 +207,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the IDs to process",
             "mandatory": true,
-            "visibilityCondition": "['board', 'project/versions', 'project/components'].indexOf(model.endpoint_name) >= 0"
+            "visibilityCondition": "['board', 'board/epic', 'board/issue', 'project/versions', 'board/backlog', 'board/sprint', 'board/version', 'project/components'].indexOf(model.endpoint_name) >= 0"
         },
         {
             "name": "expand",
