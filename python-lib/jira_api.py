@@ -110,9 +110,9 @@ endpoint_descriptors = {
         },
         "organization": {
             API: JIRA_SERVICE_DESK_URL,
-            API_RESOURCE: "organization",
+            API_RESOURCE: "organization/{item_value}",
             API_RETURN: {
-                200: "values",
+                200: ["values", None],
                 404: "Organization ID {item_value} does not exists"
             },
             PAGINATION: JIRA_SERVICE_DESK_PAGINATION
