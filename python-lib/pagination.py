@@ -12,6 +12,8 @@ class Pagination(object):
         self.counting_key = None
         self.counter = None
         self.is_data_single_dict = None
+        self.is_last_page = None
+        self.error_flag = None
 
     def configure_paging(self, config=None, skip_key=None, limit_key=None, total_key=None, next_page_key=None, url=None):
         config = {} if config is None else config
@@ -27,6 +29,8 @@ class Pagination(object):
         self.counter = 0
         self.next_page_url = url
         self.is_data_single_dict = False
+        self.is_last_page = False
+        self.error_flag = False
 
     def set_counting_key(self, counting_key):
         self.counting_key = counting_key
@@ -36,7 +40,8 @@ class Pagination(object):
             batch_size = len(data)
             self.records_to_skip = self.records_to_skip + batch_size
             return
-        elif self.counting_key:
+        self.is_last_page = data.get('isLastPage', None)
+        if self.counting_key:
             if isinstance(self.counting_key, list):
                 counting_key = self.extract_counting_key(data)
                 if counting_key is not None:
@@ -83,7 +88,9 @@ class Pagination(object):
             return dictionary.get(path)
 
     def is_next_page(self):
-        if self.is_data_single_dict:
+        if self.is_last_page:
+            return False
+        if self.is_data_single_dict or self.error_flag:
             return False
         if self.next_page_key:
             ret = (self.next_page_url is not None) and (self.next_page_url != "")
@@ -99,3 +106,6 @@ class Pagination(object):
 
     def get_next_page_url(self):
         return self.next_page_url
+
+    def set_error_flag(self, flag=True):
+        self.error_flag = flag

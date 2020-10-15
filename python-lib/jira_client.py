@@ -89,6 +89,7 @@ class JiraClient(object):
         self.start_paging(endpoint_name=endpoint_name, counting_key=self.get_data_filter_key(endpoint_name), url=url)
         response = self.get(url, data, params=self.params)
         if response.status_code >= 400:
+            self.pagination.set_error_flag(True)
             error_template = self.get_error_messages_template(endpoint_name, response.status_code)
             jira_error_message = self.get_jira_error_message(response)
             error_message = error_template.format(endpoint_name=endpoint_name,
