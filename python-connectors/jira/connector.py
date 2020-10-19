@@ -14,13 +14,13 @@ class JiraConnector(Connector):
 
         logging.info("JiraConnector init")
         self.access_type = self.config.get("access_type", "token_access")
-        self.connection_details = self.config.get(self.access_type)
         self.endpoint_name = self.config.get("endpoint_name", "")
         self.item_value = self.config.get("item_value", "")
         self.data = self.config.get("data", None)
         self.queue_id = self.config.get("queue_id", None)
         self.expand = self.config.get("expand", [])
-        self.client = JiraClient(self.connection_details)
+        connection_details = self.config.get(self.access_type)
+        self.client = JiraClient(connection_details)
 
     def get_read_schema(self):
         return None

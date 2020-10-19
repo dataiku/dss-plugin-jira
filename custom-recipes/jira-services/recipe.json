@@ -1,7 +1,7 @@
 {
     "meta": {
         "label": "Jira",
-        "description": "Retrieve Jira data based on IDs from the input dataset",
+        "description": "Retrieve issues, projects, boards, organizations data from Jira based on dataset of items IDs",
         "icon": "icon-ticket"
     },
     "kind": "PYTHON",
@@ -20,8 +20,8 @@
     "outputRoles": [
         {
             "name": "jira_output",
-            "label": "main output displayed name",
-            "description": "what main output means",
+            "label": "Jira data",
+            "description": "",
             "arity": "UNARY",
             "required": true,
             "acceptsDataset": true

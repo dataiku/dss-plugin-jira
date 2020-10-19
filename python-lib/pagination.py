@@ -1,6 +1,6 @@
 class Pagination(object):
 
-    def __init__(self, config=None, skip_key=None, limit_key=None, total_key=None, next_page_key=None):
+    def __init__(self):
         self.next_page_key = None
         self.skip_key = None
         self.limit_key = None
@@ -15,7 +15,7 @@ class Pagination(object):
         self.is_last_page = None
         self.error_flag = None
 
-    def configure_paging(self, config=None, skip_key=None, limit_key=None, total_key=None, next_page_key=None, url=None):
+    def configure_paging(self, config=None, skip_key=None, limit_key=None, total_key=None, next_page_key=None):
         config = {} if config is None else config
         self.next_page_key = config.get("next_page_key", next_page_key)
         self.skip_key = config.get("skip_key", skip_key)
@@ -40,18 +40,17 @@ class Pagination(object):
             batch_size = len(data)
             self.records_to_skip = self.records_to_skip + batch_size
             return
-        self.is_last_page = data.get('isLastPage', None)
+        self.is_last_page = data.get('isLastPage', False)
         if self.counting_key:
             if isinstance(self.counting_key, list):
                 counting_key = self.extract_counting_key(data)
-                if counting_key is not None:
-                    batch_size = len(data.get(counting_key))
-                else:
-                    batch_size = 1
+            else:
+                counting_key = self.counting_key
+            if counting_key is not None:
+                batch_size = len(data.get(counting_key))
             else:
                 self.is_last_page = True
                 batch_size = 1
-                return
         else:
             self.is_data_single_dict = True
             return
