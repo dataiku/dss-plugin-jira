@@ -142,8 +142,8 @@ class JiraClient(object):
 
     def get_endpoint_descriptor(self, endpoint_name):
         endpoint_descriptor = copy.deepcopy(self.api.endpoint_descriptors[self.api.API_DEFAULT_DESCRIPTOR])
-        if endpoint_name in self.api.endpoint_descriptors[self.api.API_ENDPOINT_NAME]:
-            update_dict(endpoint_descriptor, self.api.endpoint_descriptors[self.api.API_ENDPOINT_NAME][endpoint_name])
+        if endpoint_name in self.api.endpoint_descriptors[self.api.ENDPOINTS]:
+            update_dict(endpoint_descriptor, self.api.endpoint_descriptors[self.api.ENDPOINTS][endpoint_name])
         return endpoint_descriptor
 
     def filter_data(self, data, endpoint_name, item_value):

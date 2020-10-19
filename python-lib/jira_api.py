@@ -1,6 +1,5 @@
 API = "api"
 API_DEFAULT_DESCRIPTOR = "default"
-API_ENDPOINT_NAME = "endpoint_name"
 API_ERROR_MESSAGES = "errorMessages"
 API_QUERY_STRING = "query_string"
 API_RESOURCE = "resource_name"
@@ -9,6 +8,7 @@ COLUMN_FORMATING = "column_formating"
 COLUMN_CLEANING = "column_cleaning"
 COLUMN_EXPANDING = "column_expending"
 DEFAULT_COLUMNS_TO_EXPAND = ["changelog", "fields", "renderedFields", "names", "schema", "operations", "editmeta", "versionedRepresentations"]
+ENDPOINTS = "endpoints"
 ITEM_VALUE = "{item_value}"
 JIRA_BOARD_ID_404 = "Board {item_value} does not exists or the user does not have permission to view it."
 JIRA_CORE_PAGINATION = {
@@ -46,7 +46,7 @@ endpoint_descriptors = {
         COLUMN_EXPANDING: DEFAULT_COLUMNS_TO_EXPAND,
         PAGINATION: JIRA_CORE_PAGINATION
     },
-    "endpoint_name": {
+    ENDPOINTS: {
         "dashboard": {API_RETURN: {200: ["dashboards", None]}},
         "dashboard/search": {API_RETURN: {200: "values"}},
         "field": {
