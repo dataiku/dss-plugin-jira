@@ -30,18 +30,19 @@ class JiraConnector(Connector):
         logger.info("JiraConnector:generate_rows")
         self.client.start_session(self.endpoint_name)
         data = self.client.get_endpoint(self.endpoint_name, self.item_value, self.data, queue_id=self.queue_id, expand=self.expand)
+        counter = 0
         while len(data) > 0:
-            counter = 0
             for result in data:
-                if counter == records_limit:
-                    break
-                else:
-                    counter = counter + 1
                 yield (self.client.format(result))
+                counter = counter + 1
             if self.client.pagination.is_next_page():
                 data = self.client.get_next_page()
             else:
                 break
+            if records_limit > -1 and counter >= records_limit:
+                break
+            else:
+                counter = counter + 1
 
     def get_writer(self, dataset_schema=None, dataset_partitioning=None,
                    partition_id=None):
