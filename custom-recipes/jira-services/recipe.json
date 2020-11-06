@@ -192,7 +192,7 @@
             "visibilityCondition": "model.endpoint_name.startsWith('request')"
         },
         {
-            "name": "id_column_name_2",
+            "name": "queue_id_column_name",
             "label": "Queue ID's column name",
             "type": "COLUMN",
             "columnRole": "input_datasets_name",
