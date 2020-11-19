@@ -1,0 +1,266 @@
+{
+    "meta": {
+        "label": "Jira",
+        "description": "Retrieve issues, projects, boards, organizations data from Jira based on dataset of items IDs",
+        "icon": "icon-ticket"
+    },
+    "kind": "PYTHON",
+    "selectableFromDataset": "input_datasets_name",
+    "inputRoles": [
+        {
+            "name": "input_datasets_name",
+            "label": "Dataset containing IDs",
+            "description": "",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true
+        }
+    ],
+
+    "outputRoles": [
+        {
+            "name": "jira_output",
+            "label": "Jira data",
+            "description": "",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true
+        }
+    ],
+    "params": [
+        {
+            "name": "access_type",
+            "label": "Access type. Reviewer: hidden menu to keep for future extension",
+            "visibilityCondition": "false",
+            "type": "SELECT",
+            "defaultValue": "token_access",
+            "selectChoices": [
+                {
+                    "value": "token_access",
+                    "label": "Token"
+                }
+            ]
+        },
+        {
+            "name": "token_access",
+            "label": "Jira connection",
+            "type": "PRESET",
+            "parameterSetId": "basic-auth",
+            "visibilityCondition": "model.access_type == 'token_access'"
+        },
+        {
+            "name": "endpoint_name",
+            "label": "Item type",
+            "type": "SELECT",
+            "defaultValue": "issue",
+            "selectChoices": [
+                {
+                    "value": "issue",
+                    "label": "Core: Issue"
+                },
+                {
+                    "value": "dashboard",
+                    "label": "Core: Dashboard list"
+                },
+                {
+                    "value": "group",
+                    "label": "Core: Group"
+                },
+                {
+                    "value": "search",
+                    "label": "Core: Search issues"
+                },
+                {
+                    "value": "project/versions",
+                    "label": "Core: Project's versions"
+                },
+                {
+                    "value": "project/components",
+                    "label": "Core: Project's components"
+                },
+                {
+                    "value": "board/epic",
+                    "label": "Software: Board's epic"
+                },
+                {
+                    "value": "board/issue",
+                    "label": "Software: Board's issues"
+                },
+                {
+                    "value": "board/backlog",
+                    "label": "Software: Board's backlog"
+                },
+                {
+                    "value": "board/sprint",
+                    "label": "Software: All sprints of the board"
+                },
+                {
+                    "value": "board/version",
+                    "label": "Software: All versions of a board"
+                },
+                {
+                    "value": "organization",
+                    "label": "Service desk: Organizations"
+                },
+                {
+                    "value": "organization/user",
+                    "label": "Service desk: Organizations users"
+                },
+                {
+                    "value": "servicedesk/organization",
+                    "label": "Service desk: Organizations per service desk"
+                },
+                {
+                    "value": "servicedesk",
+                    "label": "Service desks"
+                },
+                {
+                    "value": "servicedesk/customer",
+                    "label": "Service desk's customers"
+                },
+                {
+                    "value": "servicedesk/queue",
+                    "label": "Service desk's queue"
+                },
+                {
+                    "value": "servicedesk/queue/issue",
+                    "label": "Service desk's issues per queue"
+                }
+            ]
+        },
+        {
+            "name": "id_column_name",
+            "label": "ID's column name",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the issues IDs to process",
+            "mandatory": true,
+            "visibilityCondition": "model.endpoint_name== 'issue'"
+        },
+        {
+            "name": "id_column_name",
+            "label": "Dashboard ID",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the dashboard IDs to process",
+            "mandatory": true,
+            "visibilityCondition": "model.endpoint_name== 'dashboard'"
+        },
+        {
+            "name": "id_column_name",
+            "label": "Groups names' column name",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the groups names to process",
+            "mandatory": true,
+            "visibilityCondition": "model.endpoint_name== 'group'"
+        },
+        {
+            "name": "id_column_name",
+            "label": "JQL searches' column name",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the JQL search strings",
+            "mandatory": true,
+            "visibilityCondition": "model.endpoint_name== 'search'"
+        },
+        {
+            "name": "id_column_name",
+            "label": "ID's column name",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the organization IDs to process",
+            "mandatory": true,
+            "visibilityCondition": "model.endpoint_name.startsWith('organization')"
+        },
+        {
+            "name": "id_column_name",
+            "label": "ID's column name",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the service desk IDs to process",
+            "mandatory": true,
+            "visibilityCondition": "model.endpoint_name.startsWith('servicedesk')"
+        },
+        {
+            "name": "id_column_name",
+            "label": "ID's column name",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the issue IDs or keys to process",
+            "mandatory": true,
+            "visibilityCondition": "model.endpoint_name.startsWith('request')"
+        },
+        {
+            "name": "queue_id_column_name",
+            "label": "Queue ID's column name",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the queue IDs to process",
+            "mandatory": true,
+            "visibilityCondition": "model.endpoint_name == 'servicedesk/queue/issue'"
+        },
+        {
+            "name": "id_column_name",
+            "label": "ID's column name",
+            "type": "COLUMN",
+            "columnRole": "input_datasets_name",
+            "description": "Name of the column containing the IDs to process",
+            "mandatory": true,
+            "visibilityCondition": "['board', 'board/epic', 'board/issue', 'project/versions', 'board/backlog', 'board/sprint', 'board/version', 'project/components'].indexOf(model.endpoint_name) >= 0"
+        },
+        {
+            "name": "expand",
+            "label": "Expand",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['issue'].indexOf(model.endpoint_name) >= 0",
+            "selectChoices": [
+                {"value": "changelog", "label": "Change logs"},
+                {"value": "renderedFields", "label": "Rendered fields"},
+                {"value": "names", "label": "Names"},
+                {"value": "schema", "label": "Schema"},
+                {"value": "operations", "label": "Operations"},
+                {"value": "editmeta", "label": "Edit meta"},
+                {"value": "versionedRepresentations", "label": "Versioned representations"}
+            ]
+        },
+        {
+            "name": "expand",
+            "label": "Expand",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['search', 'board/issue', 'epic/none/issue'].indexOf(model.endpoint_name) >= 0",
+            "selectChoices": [
+                {"value": "changelog", "label": "Change logs"},
+                {"value": "renderedFields", "label": "Rendered fields"},
+                {"value": "operations", "label": "Operations"},
+                {"value": "editmeta", "label": "Edit meta"},
+                {"value": "versionedRepresentations", "label": "Versioned representations"}
+            ]
+        },
+        {
+            "name": "expand",
+            "label": "Expand",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['project/search'].indexOf(model.endpoint_name) >= 0",
+            "selectChoices": [
+                {"value": "description", "label": "Change logs"},
+                {"value": "projectKeys", "label": "Project Keys"},
+                {"value": "lead", "label": "Lead"},
+                {"value": "issueTypes", "label": "Issue types"},
+                {"value": "url", "label": "URL"},
+                {"value": "insight", "label": "Insight"}
+            ]
+        },
+        {
+            "name": "expand",
+            "label": "Expand",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['project/versions'].indexOf(model.endpoint_name) >= 0",
+            "selectChoices": [
+                {"value": "issuesstatus", "label": "Issue status"},
+                {"value": "operations", "label": "Operations"}
+            ]
+        }
+    ],
+    "resourceKeys": []
+}

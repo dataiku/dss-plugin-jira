@@ -1,0 +1,81 @@
+{
+    "meta" : {
+        "label": "Jira connection",
+        "description": "Connect to Jira using your user name / API token",
+        "icon": "icon-ticket"
+    },
+    "defaultDefinableInline": true,
+    "defaultDefinableAtProjectLevel": true,
+    "pluginParams": [
+    ],
+
+    "params": [
+        {
+            "name": "server_type",
+            "label": "Server type",
+            "type": "SELECT",
+            "defaultValue": "cloud",
+            "visibilityCondition": false,
+            "selectChoices": [
+                {"value": "cloud", "label": "Jira Cloud"},
+                {"value": "on_premise", "label": "Jira On premise"}
+            ]
+        },
+        {
+            "name": "subdomain",
+            "label": "Subdomain",
+            "type": "STRING",
+            "description": "First part of your URL: https://<subdomain>.atlassian.net",
+            "defaultValue" : "",
+            "visibilityCondition": "model.server_type == 'cloud'"
+        },
+        {
+            "name": "api_url",
+            "label": "URL",
+            "type": "STRING",
+            "description": "URL to your Jira server",
+            "defaultValue" : "",
+            "visibilityCondition": "model.server_type == 'on_premise'"
+        },
+        {
+            "name": "ignore_ssl_check",
+            "label": "Ignore SSL check",
+            "type": "BOOLEAN",
+            "description": "",
+            "defaultValue" : false,
+            "visibilityCondition": "model.server_type == 'on_premise'"
+        },
+        {
+            "name": "username",
+            "label": "Username",
+            "type": "STRING",
+            "description": "Your email address",
+            "visibilityCondition": "model.server_type == 'cloud'",
+            "mandatory": true
+        },
+        {
+            "name": "token",
+            "label": "API token",
+            "type": "PASSWORD",
+            "description": "From Jira conf",
+            "visibilityCondition": "model.server_type == 'cloud'",
+            "mandatory": true
+        },
+        {
+            "name": "username",
+            "label": "Username",
+            "type": "STRING",
+            "description": "",
+            "visibilityCondition": "model.server_type == 'on_premise'",
+            "mandatory": true
+        },
+        {
+            "name": "token",
+            "label": "Password",
+            "type": "PASSWORD",
+            "description": "",
+            "visibilityCondition": "model.server_type == 'on_premise'",
+            "mandatory": true
+        }
+    ]
+}
