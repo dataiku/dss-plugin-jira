@@ -1,6 +1,6 @@
 {
     "id": "jira",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "meta": {
         "label": "Jira",
         "description": "Import data from your Jira account",
