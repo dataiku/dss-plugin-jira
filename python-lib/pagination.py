@@ -1,3 +1,6 @@
+from utils import extract_data_with_json_path
+
+
 class Pagination(object):
 
     def __init__(self):
@@ -47,7 +50,7 @@ class Pagination(object):
             else:
                 counting_key = self.counting_key
             if counting_key is not None:
-                batch_size = len(data.get(counting_key))
+                batch_size = len(extract_data_with_json_path(data, counting_key))
             else:
                 self.is_last_page = True
                 batch_size = 1

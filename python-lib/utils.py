@@ -9,3 +9,12 @@ def de_float_column(dataframe, column_name):
         dataframe[column_name] = dataframe[column_name].astype(int)
         dataframe[column_name] = dataframe[column_name].astype(str)
         dataframe[column_name] = dataframe[column_name].replace('-1', np.nan)
+
+
+def extract_data_with_json_path(data, json_path):
+    if not json_path:
+        return data
+    keys = json_path.split(".")
+    for key in keys:
+        data = data.get(key, {})
+    return data
