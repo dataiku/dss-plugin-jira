@@ -60,6 +60,10 @@ endpoint_descriptors = {
         "issue": {
             API_QUERY_STRING: {"expand": "{expand}"}
         },
+        "issue/comments": {
+            API_RESOURCE: "issue/{item_value}",
+            API_RETURN: {200: "fields.comment.comments"}
+        },
         "issue/createmeta": {
             API_RESOURCE: "{endpoint_name}",
             API_RETURN: {
