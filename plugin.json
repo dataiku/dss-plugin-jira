@@ -4,10 +4,11 @@
     "meta": {
         "label": "Jira",
         "description": "Import data from your Jira account",
-        "author": "Dataiku (Alex Bourret)",
+        "author": "Dataiku",
         "icon": "icon-ticket",
         "tags": ["Connector", "CRM"],
         "url": "https://www.dataiku.com/product/plugins/jira/",
-        "licenseInfo": "Apache Software License"
+        "licenseInfo": "Apache Software License",
+        "supportLevel": "NOT_SUPPORTED"
     }
 }
