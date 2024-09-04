@@ -59,6 +59,10 @@
                     "label": "Core: Issue"
                 },
                 {
+                    "value": "issue/comments",
+                    "label": "Core: Issue comments"
+                },
+                {
                     "value": "dashboard",
                     "label": "Core: Dashboard list"
                 },
@@ -207,7 +211,7 @@
             "columnRole": "input_datasets_name",
             "description": "Name of the column containing the IDs to process",
             "mandatory": true,
-            "visibilityCondition": "['board', 'board/epic', 'board/issue', 'project/versions', 'board/backlog', 'board/sprint', 'board/version', 'project/components'].indexOf(model.endpoint_name) >= 0"
+            "visibilityCondition": "['issue/comments', 'board', 'board/epic', 'board/issue', 'project/versions', 'board/backlog', 'board/sprint', 'board/version', 'project/components'].indexOf(model.endpoint_name) >= 0"
         },
         {
             "name": "expand",

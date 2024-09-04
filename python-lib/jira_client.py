@@ -5,6 +5,7 @@ import json
 import os
 import jira_api as api
 from pagination import Pagination
+from utils import extract_data_with_json_path
 
 FILTERING_KEY_WITHOUT_PARAMETER = 0
 FILTERING_KEY_WITH_PARAMETER = 1
@@ -147,7 +148,7 @@ class JiraClient(object):
         if filtering_key is None:
             return arrayed(data)
         else:
-            return arrayed(data[filtering_key])
+            return arrayed(extract_data_with_json_path(data,filtering_key))
 
     def format_data(self, data):
         for key in self.formating:
