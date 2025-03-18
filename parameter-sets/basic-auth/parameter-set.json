@@ -15,7 +15,7 @@
             "label": "Server type",
             "type": "SELECT",
             "defaultValue": "cloud",
-            "visibilityCondition": false,
+            "visibilityCondition": true,
             "selectChoices": [
                 {"value": "cloud", "label": "Jira Cloud"},
                 {"value": "on_premise", "label": "Jira On premise"}
