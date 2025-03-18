@@ -1,0 +1,37 @@
+{
+    "id": "create-jira-issue",
+    "meta": {
+        "icon": "dku-icon-jira-20",
+        "label": "Create a Jira Issue"
+    },
+    
+    "params" : [
+        {
+            "name": "access_type",
+            "label": "Access type. Reviewer: hidden menu to keep for future extension",
+            "visibilityCondition": "false",
+            "type": "SELECT",
+            "defaultValue": "token_access",
+            "selectChoices": [
+                {
+                    "value": "token_access",
+                    "label": "Token"
+                }
+            ]
+        },
+        {
+            "name": "token_access",
+            "label": "Jira connection",
+            "type": "PRESET",
+            "parameterSetId": "basic-auth",
+            "visibilityCondition": "model.access_type == 'token_access'"
+        },
+        {
+            "name": "jira_project_key",
+            "label":"Jira Project Key",
+            "type": "STRING",
+            "mandatory": true,
+            "description": ""
+        }
+    ]
+}
