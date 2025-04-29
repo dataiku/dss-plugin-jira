@@ -1,6 +1,6 @@
 # Changelog
 
-## [Version 1.1.0](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.0) - Feature release - 2025-03-14
+## [Version 1.1.0](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.0) - Feature release - 2025-04-30
 
 - Add AI agent tool for issue creation
 

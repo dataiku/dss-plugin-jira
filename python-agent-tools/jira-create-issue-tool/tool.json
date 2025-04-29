@@ -2,7 +2,8 @@
     "id": "create-jira-issue",
     "meta": {
         "icon": "dku-icon-jira-20",
-        "label": "Create a Jira Issue"
+        "label": "Create Jira Issue",
+        "description": "Create a Jira issue based on user input"
     },
     
     "params" : [
