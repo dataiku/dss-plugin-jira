@@ -45,16 +45,28 @@ class JiraCreateIssueTool(BaseAgentTool):
 
     def invoke(self, input, trace):
         args = input.get("input", {})
+
+        # Log inputs and config to trace
+        trace.span["name"] = "JIRA_CREATE_ISSUE_TOOL_CALL"
+        for key, value in args.items():
+            trace.inputs[key] = value
+        trace.attributes["config"] = self.config
+
         summary = args.get("summary")
         description = args.get("description")
         jira_instance_url = self.client.get_site_url()
         created_issue = self.create_jira_issue(summary, description)
+
         if created_issue and "errors" in created_issue:
-            return {
-                "output": "There was a problem while creating the issue ticket: {}".format(
-                    created_issue.get("errors", {}).get("description")
-                )
-            }
+            output_text = "There was a problem while creating the issue ticket: {}".format(
+                created_issue.get("errors", {}).get("description")
+            )
+        else:
+            output_text = f"Issue created: {created_issue.get('key')} available at {jira_instance_url}browse/{created_issue.get('key')}" if isinstance(created_issue, dict) else created_issue
+        
+        # Log outputs to trace
+        trace.outputs["output"] = output_text
+
         return {
-            "output": f"Issue created: {created_issue.get('key')} available at {jira_instance_url}browse/{created_issue.get('key')}" if isinstance(created_issue, dict) else created_issue
+            "output": output_text
         }
