@@ -1,7 +1,7 @@
 {
     "id": "create-jira-issue",
     "meta": {
-        "icon": "dku-icon-jira-20",
+        "icon": "icon-ticket",
         "label": "Create Jira Issue",
         "description": "Create a Jira issue based on user input"
     },
