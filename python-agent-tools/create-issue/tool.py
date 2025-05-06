@@ -9,6 +9,7 @@ class JiraCreateIssueTool(BaseAgentTool):
         # This logger outputs the key in DEBUG mode ...
         logging.getLogger("jiraapiclient.discovery").setLevel("INFO")
         logging.info("JiraCreateIssueTool init")
+        self.config = config
         connection_details = get_connection_details(config)
         self.client = JiraClient(connection_details)
         self.client.start_session("issue")
