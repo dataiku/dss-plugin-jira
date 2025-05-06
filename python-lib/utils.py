@@ -18,3 +18,9 @@ def extract_data_with_json_path(data, json_path):
     for key in keys:
         data = data.get(key, {})
     return data
+
+
+def get_connection_details(config):
+    access_type = config.get("access_type", "token_access")
+    connection_details = config.get(access_type)
+    return connection_details

@@ -148,7 +148,7 @@ class JiraClient(object):
         if filtering_key is None:
             return arrayed(data)
         else:
-            return arrayed(extract_data_with_json_path(data,filtering_key))
+            return arrayed(extract_data_with_json_path(data, filtering_key))
 
     def format_data(self, data):
         for key in self.formating:
@@ -213,6 +213,31 @@ class JiraClient(object):
         logger.info("Access Jira on endppoint {}".format(url))
         response = requests.get(url, **args)
         return response
+
+    def post(self, url, data=None, json=None, params=None):
+        headers = self.get_headers()
+        headers['Content-Type'] = 'application/json'
+        headers['Accept'] = 'application/json'
+        headers.pop('X-ExperimentalApi', None)
+        auth = self.get_auth()
+        response = requests.post(url, params=params, auth=auth, data=data, json=json, headers=headers)
+        return response
+
+    def create_issue(self, jira_project_key, summary, description, issue_type):
+        issue_data = {
+            'project': {'key': jira_project_key},
+            'summary': summary,
+            'description': description,
+            'issuetype': {'name': issue_type}
+        }
+        json = {
+            "fields": issue_data,
+        }
+        # This data form does not work on v3
+        url = "/".join([self.get_site_url(), "rest/api/2/issue"])
+        response = self.post(url=url, json=json)
+        json_response = response.json()
+        return json_response
 
     def get_auth(self):
         if self.is_opsgenie_api():
