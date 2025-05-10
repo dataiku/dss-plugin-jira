@@ -47,15 +47,19 @@ class JiraCreateIssueTool(BaseAgentTool):
     def invoke(self, input, trace):
         args = input.get("input", {})
 
+        summary = args.get("summary")
+        description = args.get("description")
+        jira_instance_url = self.client.get_site_url()
+
         # Log inputs and config to trace
         trace.span["name"] = "JIRA_CREATE_ISSUE_TOOL_CALL"
         for key, value in args.items():
             trace.inputs[key] = value
-        trace.attributes["config"] = self.config
+        trace.attributes["config"] = {
+            "jira_instance_url": jira_instance_url,
+            "jira_project_key": self.jira_project_key
+        } 
 
-        summary = args.get("summary")
-        description = args.get("description")
-        jira_instance_url = self.client.get_site_url()
         created_issue = self.create_jira_issue(summary, description)
 
         if created_issue and "errors" in created_issue:
