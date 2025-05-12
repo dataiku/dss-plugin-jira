@@ -1,5 +1,5 @@
 # Changelog
-## [Version 1.1.1](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.0) - Bug Fix release - 2025-05-12
+## [Version 1.1.1](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.1) - Bug Fix release - 2025-05-12
 
 - Fixed appropriate trace logging
 
