@@ -2,7 +2,7 @@
     "meta" : {
         "label": "Jira connection",
         "description": "Connect to Jira using your user name / API token",
-        "icon": "icon-ticket"
+        "icon": "icon-ticket dku-icon-jira"
     },
     "defaultDefinableInline": true,
     "defaultDefinableAtProjectLevel": true,
