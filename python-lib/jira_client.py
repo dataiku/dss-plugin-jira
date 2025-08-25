@@ -75,9 +75,9 @@ class JiraClient(object):
     def get_ressource_structure(self):
         return self.endpoint_descriptor[api.API_RESOURCE]
 
-    def get_endpoint(self, endpoint_name, item_value, data, queue_id=None, expand=[], raise_exception=True):
+    def get_endpoint(self, endpoint_name, item_value, data, queue_id=None, expand=[], fields=[], raise_exception=True):
         self.endpoint_name = endpoint_name
-        self.params = self.get_params(endpoint_name, item_value, queue_id, expand)
+        self.params = self.get_params(endpoint_name, item_value, queue_id, expand, fields)
         url = self.get_url(endpoint_name, item_value, queue_id)
         self.start_paging(counting_key=self.get_data_filter_key(), url=url)
         response = self.get(url, data, params=self.params)
@@ -104,12 +104,18 @@ class JiraClient(object):
         self.pagination.configure_paging(pagination_config)
         self.pagination.reset_paging(counting_key=self.get_data_filter_key(), url=url)
 
-    def get_params(self, endpoint_name, item_value, queue_id, expand=[]):
+    def get_params(self, endpoint_name, item_value, queue_id, expand=[], fields=[]):
         ret = {}
         query_string_dict = self.get_query_string_dict()
         for key in query_string_dict:
             query_string_template = query_string_dict[key]
-            query_string_value = query_string_template.format(endpoint_name=endpoint_name, item_value=item_value, queue_id=queue_id, expand=",".join(expand))
+            query_string_value = query_string_template.format(
+                endpoint_name=endpoint_name,
+                item_value=item_value,
+                queue_id=queue_id,
+                expand=",".join(expand),
+                fields=",".join(fields)
+            )
             ret.update({key: query_string_value})
         return ret
 

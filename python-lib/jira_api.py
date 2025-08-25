@@ -108,6 +108,13 @@ endpoint_descriptors = {
                 200: "issues"
             }
         },
+        "search/jql": {
+            API_RESOURCE: "search/jql",
+            API_QUERY_STRING: {"jql": ITEM_VALUE, "expand": "{expand}", "fields": "{fields}"},
+            API_RETURN: {
+                200: "issues"
+            }
+        },
         "worklog/deleted": {},
         "worklog/list": {
             API_RESOURCE: "issue/{item_value}/worklog",
