@@ -1,4 +1,9 @@
 # Changelog
+
+## [Version 1.1.2](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.2) - Bug Fix release - 2025-08-25
+
+- Adding new search/jql endpoint, marking previous search endpoint as deprecated
+
 ## [Version 1.1.1](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.1) - Bug Fix release - 2025-05-12
 
 - Fixed appropriate trace logging
