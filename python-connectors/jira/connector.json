@@ -36,7 +36,11 @@
             "selectChoices": [
                 {
                     "value": "search",
-                    "label": "Core: Search issues"
+                    "label": "Core: Search issues (Deprecated)"
+                },
+                {
+                    "value": "search/jql",
+                    "label": "Core: Search issues (JQL)"
                 },
                 {
                     "value": "dashboard",
@@ -156,7 +160,7 @@
             "label": "JQL search query",
             "type": "STRING",
             "defaultValue": null,
-            "visibilityCondition": "model.endpoint_name == 'search' || model.endpoint_name == 'jql/match'"
+            "visibilityCondition": "model.endpoint_name == 'search' || model.endpoint_name == 'jql/match' || model.endpoint_name == 'search/jql'"
         },
         {
             "name": "expand",
@@ -201,13 +205,25 @@
             "name": "expand",
             "label": "Expand",
             "type": "MULTISELECT",
-            "visibilityCondition": "['search', 'board/issue', 'epic/none/issue'].indexOf(model.endpoint_name) >= 0",
+            "visibilityCondition": "['search', 'search/jql', 'board/issue', 'epic/none/issue'].indexOf(model.endpoint_name) >= 0",
             "selectChoices": [
                 {"value": "changelog", "label": "Change logs"},
                 {"value": "renderedFields", "label": "Rendered fields"},
                 {"value": "operations", "label": "Operations"},
                 {"value": "editmeta", "label": "Edit meta"},
                 {"value": "versionedRepresentations", "label": "Versioned representations"}
+            ]
+        },
+        {
+            "name": "fields",
+            "label": "Fields",
+            "type": "MULTISELECT",
+            "visibilityCondition": "['search/jql'].indexOf(model.endpoint_name) >= 0",
+            "selectChoices": [
+                {"value": "*all", "label": "All"},
+                {"value": "summary", "label": "Summary"},
+                {"value": "comment", "label": "Comments"},
+                {"value": "description", "label": "Description"}
             ]
         },
         {
