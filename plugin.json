@@ -5,7 +5,7 @@
         "label": "Jira",
         "description": "Import data from your Jira account",
         "author": "Dataiku",
-        "icon": "icon-ticket",
+        "icon": "icon-ticket dku-icon-jira",
         "tags": ["Connector", "CRM", "Generative AI", "Agents", "Tools"],
         "url": "https://www.dataiku.com/product/plugins/jira/",
         "licenseInfo": "Apache Software License",
