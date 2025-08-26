@@ -274,6 +274,7 @@
             "label": "Fields",
             "type": "MULTISELECT",
             "visibilityCondition": "['search/jql'].indexOf(model.endpoint_name) >= 0",
+            "defaultValue": ["*all"],
             "selectChoices": [
                 {"value": "*all", "label": "All"},
                 {"value": "summary", "label": "Summary"},
