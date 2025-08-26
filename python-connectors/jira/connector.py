@@ -19,6 +19,7 @@ class JiraConnector(Connector):
         self.data = self.config.get("data", None)
         self.queue_id = self.config.get("queue_id", None)
         self.expand = self.config.get("expand", [])
+        self.fields = self.config.get("fields", [])
         connection_details = self.config.get(self.access_type)
         self.client = JiraClient(connection_details)
 
@@ -29,7 +30,7 @@ class JiraConnector(Connector):
                       partition_id=None, records_limit=-1):
         logger.info("JiraConnector:generate_rows")
         self.client.start_session(self.endpoint_name)
-        data = self.client.get_endpoint(self.endpoint_name, self.item_value, self.data, queue_id=self.queue_id, expand=self.expand)
+        data = self.client.get_endpoint(self.endpoint_name, self.item_value, self.data, queue_id=self.queue_id, expand=self.expand, fields=self.fields)
         counter = 0
         while len(data) > 0:
             for result in data:

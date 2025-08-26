@@ -16,10 +16,11 @@ de_float_column(id_list_df, id_column_name)
 queue_id_column_name = config.get('queue_id_column_name', None)
 de_float_column(id_list_df, queue_id_column_name)
 
-access_type = get_recipe_config()['access_type']
-connection_details = get_recipe_config()[access_type]
-endpoint_name = get_recipe_config()['endpoint_name']
-expand = get_recipe_config()['expand']
+access_type = config.get('access_type')
+connection_details = config.get(access_type)
+endpoint_name = config.get('endpoint_name')
+expand = config.get('expand')
+fields = config.get('fields')
 
 client = JiraClient(connection_details)
 client.start_session(endpoint_name)
@@ -36,7 +37,7 @@ for index in id_list_df.index:
     else:
         queue_id = None
 
-    data = client.get_endpoint(endpoint_name, jira_id, "", expand=expand, raise_exception=False, queue_id=queue_id)
+    data = client.get_endpoint(endpoint_name, jira_id, "", expand=expand, fields=fields, raise_exception=False, queue_id=queue_id)
     while len(data) > 0:
         for result in data:
             record = dict(indexes_columns)
