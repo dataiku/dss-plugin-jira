@@ -12,7 +12,7 @@ class JiraConnector(Connector):
     def __init__(self, config, plugin_config):
         Connector.__init__(self, config, plugin_config)  # pass the parameters to the base class
 
-        logging.info("JiraConnector init")
+        logging.info("JiraConnector init v1.1.3")
         self.access_type = self.config.get("access_type", "token_access")
         self.endpoint_name = self.config.get("endpoint_name", "")
         self.item_value = self.config.get("item_value", "")
