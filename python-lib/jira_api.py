@@ -113,6 +113,9 @@ endpoint_descriptors = {
             API_QUERY_STRING: {"jql": ITEM_VALUE, "expand": "{expand}", "fields": "{fields}"},
             API_RETURN: {
                 200: "issues"
+            },
+            PAGINATION: {
+                "next_token_key": ["nextPageToken"]
             }
         },
         "worklog/deleted": {},
