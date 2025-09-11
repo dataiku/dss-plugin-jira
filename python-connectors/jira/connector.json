@@ -2,7 +2,7 @@
     "meta" : {
         "label": "Jira",
         "description": "Import data from Jira Core, Software and Service Desk",
-        "icon": "icon-ticket dku-icon-jira"
+        "icon": "icon-ticket"
     },
     "readable": true,
     "writable": false,

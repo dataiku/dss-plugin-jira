@@ -2,7 +2,7 @@
     "meta": {
         "label": "Jira",
         "description": "Retrieve issues, projects, boards, organizations data from Jira based on dataset of items IDs",
-        "icon": "icon-ticket dku-icon-jira"
+        "icon": "icon-ticket"
     },
     "kind": "PYTHON",
     "selectableFromDataset": "input_datasets_name",
