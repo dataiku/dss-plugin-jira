@@ -45,6 +45,7 @@ unit-tests:
 		python3 -m pytest tests/python/unit --alluredir=tests/allure_report || ret=$$?; exit $$ret \
 	)
 
+
 integration-tests:
 	@echo "Running integration tests..."
 	@( \
