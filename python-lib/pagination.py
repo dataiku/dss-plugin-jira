@@ -115,7 +115,7 @@ class Pagination(object):
         if self.skip_key and (self.records_to_skip > 0):
             ret.update({self.skip_key: self.records_to_skip})
         if self.next_page_token:
-            ret.update({self.next_token_key[-1:][0]: self.next_page_token})
+            ret.update({self.next_token_key[-1]: self.next_page_token})
         return ret
 
     def get_next_page_url(self):
