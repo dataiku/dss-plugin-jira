@@ -5,10 +5,12 @@ class Pagination(object):
 
     def __init__(self):
         self.next_page_key = None
+        self.next_token_key = None
         self.skip_key = None
         self.limit_key = None
         self.total_key = None
         self.next_page_url = None
+        self.next_page_token = None
         self.remaining_records = None
         self.records_to_skip = None
         self.pagination_style = ""
@@ -18,9 +20,10 @@ class Pagination(object):
         self.is_last_page = None
         self.error_flag = None
 
-    def configure_paging(self, config=None, skip_key=None, limit_key=None, total_key=None, next_page_key=None):
+    def configure_paging(self, config=None, skip_key=None, limit_key=None, total_key=None, next_page_key=None, next_token_key=None):
         config = {} if config is None else config
         self.next_page_key = config.get("next_page_key", next_page_key)
+        self.next_token_key = config.get("next_token_key", next_token_key)
         self.skip_key = config.get("skip_key", skip_key)
         self.limit_key = config.get("limit_key", limit_key)
         self.total_key = config.get("total_key", total_key)
@@ -62,6 +65,8 @@ class Pagination(object):
     def update_page_parameters(self, data, batch_size):
         if self.next_page_key:
             self.next_page_url = self.get_from_path(data, self.next_page_key)
+        if self.next_token_key:
+            self.next_page_token = self.get_from_path(data, self.next_token_key)
         if self.skip_key:
             self.skip = data.get(self.skip_key)
         if self.limit_key:
@@ -95,6 +100,10 @@ class Pagination(object):
             return False
         if self.is_data_single_dict or self.error_flag:
             return False
+        if self.next_token_key and self.next_page_token:
+            return True
+        elif self.next_token_key and not self.next_page_token:
+            return False
         if self.next_page_key:
             ret = (self.next_page_url is not None) and (self.next_page_url != "")
         else:
@@ -105,6 +114,8 @@ class Pagination(object):
         ret = {}
         if self.skip_key and (self.records_to_skip > 0):
             ret.update({self.skip_key: self.records_to_skip})
+        if self.next_page_token and self.next_token_key:
+            ret.update({self.next_token_key[-1]: self.next_page_token})
         return ret
 
     def get_next_page_url(self):
