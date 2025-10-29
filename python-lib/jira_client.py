@@ -226,7 +226,10 @@ class JiraClient(object):
         headers['Accept'] = 'application/json'
         headers.pop('X-ExperimentalApi', None)
         auth = self.get_auth()
-        response = requests.post(url, params=params, auth=auth, data=data, json=json, headers=headers)
+        if self.ignore_ssl_check:
+            response = requests.post(url, params=params, auth=auth, data=data, json=json, headers=headers, verify=False)
+        else:
+            response = requests.post(url, params=params, auth=auth, data=data, json=json, headers=headers)
         return response
 
     def create_issue(self, jira_project_key, summary, description, issue_type):
