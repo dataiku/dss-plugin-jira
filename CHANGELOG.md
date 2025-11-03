@@ -3,6 +3,7 @@
 ## [Version 1.1.4](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.4) - Bug Fix release - 2025-10-29
 
 - Implement SSL check ignore on post requests (issue creation)
+- Bubble up 4XX errors on agent tool
 
 ## [Version 1.1.3](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.3) - Bug Fix release - 2025-09-11
 
