@@ -37,12 +37,7 @@ class JiraCreateIssueTool(BaseAgentTool):
         }
 
     def create_jira_issue(self, summary: str, description: str, issue_type: str = "Task"):
-        try:
-            new_issue = self.client.create_issue(self.jira_project_key, summary, description, issue_type)
-            return new_issue
-
-        except Exception as exception:
-            return f"Error creating issue: {str(exception)}"
+        return self.client.create_issue(self.jira_project_key, summary, description, issue_type)
 
     def invoke(self, input, trace):
         args = input.get("input", {})
@@ -58,7 +53,7 @@ class JiraCreateIssueTool(BaseAgentTool):
         trace.attributes["config"] = {
             "jira_instance_url": jira_instance_url,
             "jira_project_key": self.jira_project_key
-        } 
+        }
 
         created_issue = self.create_jira_issue(summary, description)
 
@@ -68,10 +63,16 @@ class JiraCreateIssueTool(BaseAgentTool):
             )
         else:
             output_text = f"Issue created: {created_issue.get('key')} available at {jira_instance_url}browse/{created_issue.get('key')}" if isinstance(created_issue, dict) else created_issue
-        
+
         # Log outputs to trace
         trace.outputs["output"] = output_text
 
         return {
             "output": output_text
+        }
+
+    def load_sample_query(self, tool):
+        return {
+            "summary": "Computer not working",
+            "description": "User cannot log in his computer. Please create an account"
         }
