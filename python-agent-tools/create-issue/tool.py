@@ -36,6 +36,12 @@ class JiraCreateIssueTool(BaseAgentTool):
             }
         }
 
+    def load_sample_query(self, tool):
+        return {
+            "summary": "The issue summary",
+            "description": "The issue description"
+        }
+
     def create_jira_issue(self, summary: str, description: str, issue_type: str = "Task"):
         try:
             new_issue = self.client.create_issue(self.jira_project_key, summary, description, issue_type)

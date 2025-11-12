@@ -1,5 +1,9 @@
 # Changelog
 
+## [Version 1.1.5](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.5) - Feature release - 2025-11-13
+
+- Added load sample query function
+
 ## [Version 1.1.4](https://github.com/dataiku/dss-plugin-jira/releases/tag/v1.1.4) - Bug Fix release - 2025-10-29
 
 - Implement SSL check ignore on post requests (issue creation)
