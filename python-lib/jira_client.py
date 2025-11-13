@@ -245,6 +245,7 @@ class JiraClient(object):
         # This data form does not work on v3
         url = "/".join([self.get_site_url(), "rest/api/2/issue"])
         response = self.post(url=url, json=json)
+        raise_on_response_error(response, context="Failure while creating issue")
         json_response = response.json()
         return json_response
 
@@ -311,3 +312,47 @@ def arrayed(data):
         return data
     else:
         return [data]
+
+
+def raise_on_response_error(response, context=""):
+    if not isinstance(response, requests.Response):
+        raise Exception("The response from server is not recognized")
+    status_code = response.status_code
+    if status_code > 299 or status_code < 200:
+        json_response = safe_json(response)
+        if json_response:
+            message = extract_message(json_response)
+            if not message:
+                message = response.text
+        else:
+            message = response.text
+        raise Exception(
+            "Error {} {}: {}".format(
+                status_code,
+                context,
+                message
+            )
+        )
+
+
+def extract_message(json_response):
+    paths = [
+        ["errors", "summary"],
+        ["errors", "issuetype"],
+        ["errors", "description"]
+    ]
+    for path in paths:
+        next_token = json_response
+        for token in path:
+            next_token = next_token.get(token, {})
+        if next_token:
+            return next_token
+    return None
+
+
+def safe_json(response):
+    try:
+        reponse_content = response.json()
+    except Exception:
+        return None
+    return reponse_content
