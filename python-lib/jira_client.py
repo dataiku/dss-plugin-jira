@@ -327,7 +327,7 @@ def raise_on_response_error(response, context=""):
         else:
             message = response.text
         raise Exception(
-            "Error {}: {}: {}".format(
+            "Error {} {}: {}".format(
                 status_code,
                 context,
                 message
