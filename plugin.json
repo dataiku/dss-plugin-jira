@@ -7,7 +7,7 @@
         "author": "Dataiku",
         "icon": "icon-ticket dku-icon-jira",
         "category": "Connect",
-        "tags": ["Agents", "Tools", "Data source", "Recipe", "Dataset"],
+        "tags": ["Agents", "Tools", "Data source", "Recipe", "Dataset", "Agent tool"],
         "url": "https://www.dataiku.com/product/plugins/jira/",
         "licenseInfo": "Apache Software License",
         "supportLevel": "NOT_SUPPORTED"
